@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethelgard: Selección de Campaña</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Estilos Personalizados -->
+    <style>
+        /* === Estilos CSS (Igual que index.html) === */
+        :root {
+            --color-background-dark: #1a1a1a;
+            --color-background-section: #252525;
+            --color-text-primary: #cccccc;
+            --color-text-secondary: #a0a0a0;
+            --color-accent-dark-red: #5a0f0f;
+            --color-accent-gold: #b8a975;
+            --color-accent-parchment: #d4c99e;
+            --color-accent-bronze: #e09d54;
+            --color-border-dark: #333;
+            --color-border-light: #444;
+        }
+        html { scroll-padding-top: 20px; /* No hay navbar fija aquí */ scroll-behavior: smooth; }
+        body { font-family: 'EB Garamond', serif; background-color: var(--color-background-dark); color: var(--color-text-primary); line-height: 1.7; padding-top: 20px; }
+        h1, h2, h3 { font-family: 'Cinzel Decorative', cursive; }
+        h1 { color: var(--color-accent-parchment); font-size: 2.5em;}
+        h2 { color: var(--color-accent-gold); font-size: 1.8em; margin-top: 2rem; border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.5rem; }
+        .container { max-width: 960px; } /* Limitar ancho */
+        a { color: var(--color-accent-bronze); text-decoration: none; }
+        a:hover { color: #ffcc88; }
+        .btn-custom-primary { background-color: var(--color-accent-dark-red); border-color: #8a4f4f; color: var(--color-text-primary); font-weight: bold; transition: background-color 0.3s ease, border-color 0.3s ease; margin: 5px; padding: 10px 20px; }
+        .btn-custom-primary:hover { background-color: #8a4f4f; border-color: #a56f6f; color: #fff; }
+        .btn-custom-primary:disabled { background-color: #4a2525; border-color: #6a3f3f; color: #777; }
+        footer { text-align: center; margin-top: 40px; padding: 20px 0; font-size: 0.9em; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-dark); }
+
+        /* Estilos específicos para selección */
+        .campaign-card {
+             background-color: var(--color-background-section);
+             border: 2px solid var(--color-border-light); /* Borde un poco más grueso */
+             border-radius: 5px; padding: 25px; margin-bottom: 25px;
+             transition: border-color 0.3s ease, transform 0.2s ease;
+             cursor: pointer;
+        }
+        .campaign-card h3 { color: var(--color-accent-parchment); margin-top: 0; font-size: 1.6em; margin-bottom: 0.75rem;}
+         /* Estilo para campañas deshabilitadas */
+         .campaign-card.disabled {
+             cursor: not-allowed;
+             opacity: 0.5;
+             border-style: dashed; /* Indica visualmente que no está lista */
+             background-color: #1f1f1f; /* Fondo ligeramente diferente */
+         }
+         .campaign-card:not(.disabled):hover { /* Efecto hover sólo en habilitadas */
+             border-color: var(--color-accent-gold);
+             transform: translateY(-3px); /* Ligero efecto elevación */
+         }
+         .campaign-card.selected { /* Estilo selección */
+            border-color: var(--color-accent-bronze); /* Naranja/Bronce para selección */
+            transform: translateY(-1px);
+             box-shadow: 0 0 15px rgba(224, 157, 84, 0.2); /* Sutil brillo bronce */
+         }
+
+        /* Estilos número jugadores */
+        .selection-container {
+             margin-top: 40px; padding-top: 25px;
+             border-top: 1px solid var(--color-border-dark);
+             display: flex; align-items: center; justify-content: space-between;
+             flex-wrap: wrap; /* Para móviles */
+        }
+        .player-count-group { margin-bottom: 15px; /* Espacio en móvil */ }
+        label[for="player-count"] {
+            font-weight: bold; color: var(--color-text-primary);
+            margin-right: 10px; font-size: 1.1em;
+        }
+        .form-select {
+             background-color: var(--color-background-section); border-color: var(--color-border-light);
+             color: var(--color-text-primary); width: auto; display: inline-block;
+             cursor: pointer;
+         }
+         .form-select:focus {
+             background-color: #333; border-color: var(--color-accent-gold);
+             color: var(--color-text-primary);
+             box-shadow: 0 0 0 0.25rem rgba(184, 169, 117, 0.25);
+         }
+
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    <div class="container mt-4">
+        <div class="text-center mb-5">
+            <h1>Elige tu Destino en Aethelgard</h1>
+            <p class="text-secondary">Selecciona la crónica que deseas vivir y el número de almas valientes (o condenadas) que te acompañarán.</p>
+            <hr style="border-color: var(--color-border-dark);">
+        </div>
+
+        <div id="campaign-list">
+            <h2>Campañas Disponibles:</h2>
+
+            <!-- Campaña 1: Minas Corruptas -->
+            <div class="campaign-card" data-campaign-id="minas_corruptas" data-start-section="1">
+                <h3>Capítulo 1: Las Minas Corruptas</h3>
+                <p>Responde a la llamada de Grimhold. Investiga el origen de la corrupción que asola el pueblo, adentrándote en las peligrosas y olvidadas minas bajo el castillo. Enfréntate a Goblins, no-muertos y al orco trastornado Ghoruk.</p>
+                <small class="text-secondary">Niveles Recomendados: 1-3 | Duración: 3-5 Sesiones | Estado: <strong>Disponible</strong></small>
+            </div>
+
+            <!-- Campaña 2 (Placeholder) -->
+            <div class="campaign-card disabled" data-campaign-id="el_castillo_sombrio">
+                <h3>Capítulo 2: El Castillo Sombrío</h3>
+                 <p>Asciende desde las profundidades o infíltrate en la fortaleza maldita de Grimhold. Descubre los secretos tras la Sombra Primigenia, enfréntate a cultistas y horrores aberrantes en los salones profanados.</p>
+                 <small class="text-secondary">Niveles Recomendados: 3-6 | Duración Estimada: 5-7 Sesiones | Estado: <strong>Próximamente</strong></small>
+            </div>
+
+            <!-- Campaña 3 (Placeholder) -->
+            <div class="campaign-card disabled" data-campaign-id="ecos_del_pasado">
+                 <h3>Capítulo 3: Ecos del Pasado Ancestral</h3>
+                 <p>Viaja más allá de Grimhold, explorando antiguas ruinas élficas o criptas enanas mencionadas en oscuros legajos encontrados en el castillo, buscando la clave para sellar o destruir la Sombra definitivamente.</p>
+                 <small class="text-secondary">Niveles Recomendados: 6-10 | Duración Estimada: 6-8 Sesiones | Estado: <strong>Próximamente</strong></small>
+             </div>
+
+        </div>
+
+        <!-- Selección Jugadores y Botón Empezar -->
+        <div class="selection-container">
+            <div class="player-count-group">
+                <label for="player-count">Número de Jugadores:</label>
+                <select class="form-select" id="player-count" name="players">
+                    <option value="2" selected>2 Jugadores</option>
+                    <option value="3">3 Jugadores</option>
+                    <option value="4">4 Jugadores</option>
+                </select>
+             </div>
+            <button id="start-selected-campaign-btn" class="btn btn-lg btn-custom-primary" disabled>Empezar Aventura Seleccionada</button>
+        </div>
+        <div id="selection-error" class="text-danger mt-3" style="display: none; font-weight: bold;">Por favor, selecciona una campaña disponible.</div>
+
+    </div><!-- /container -->
+
+    <footer class="mt-5">
+        <div class="container">
+             <p>&copy; 2024 "Aethelgard: Crónicas de la Sombra Primigenia" - [Tu Nombre/Grupo]. Inspirado en SRD 5.1 OGL.</p>
+             <p><a href="index.html">Volver a Inicio</a></p> <!-- Enlace para volver -->
+         </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- JS para Selección (Corregido y Verificado) -->
+    <script>
+        const campaignCards = document.querySelectorAll('.campaign-card:not(.disabled)');
+        const startButton = document.getElementById('start-selected-campaign-btn');
+        const playerCountSelect = document.getElementById('player-count');
+        const selectionError = document.getElementById('selection-error');
+        let selectedCampaignId = null;
+        let selectedStartSection = null;
+
+        // Asegura botón deshabilitado y error oculto al inicio
+        startButton.disabled = true;
+        selectionError.style.display = 'none';
+
+        campaignCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Quitar selección previa VISUAL
+                campaignCards.forEach(c => c.classList.remove('selected'));
+                // Añadir selección actual VISUAL
+                card.classList.add('selected');
+
+                // GUARDAR datos de la tarjeta clickeada
+                selectedCampaignId = card.dataset.campaignId;
+                selectedStartSection = card.dataset.startSection;
+
+                console.log(`Tarjeta clickeada: Campaña ID=${selectedCampaignId}, Inicio Sección=${selectedStartSection}`);
+
+                // Habilitar botón SOLO si tenemos datos válidos
+                if (selectedCampaignId && selectedStartSection) {
+                    startButton.disabled = false;
+                    selectionError.style.display = 'none'; // Ocultar error
+                } else {
+                    startButton.disabled = true; // Asegurar deshabilitado si algo falló
+                    console.error("Error: La tarjeta clickeada no tiene campaignId o startSection válido en sus data-attributes.");
+                    selectionError.textContent = "Error al leer datos de campaña. Intenta refrescar.";
+                    selectionError.style.display = 'block';
+                }
+            });
+        });
+
+        // Listener del botón "Empezar"
+        startButton.addEventListener('click', () => {
+             console.log("Botón Empezar pulsado. Campaña seleccionada actualmente:", selectedCampaignId);
+
+            // Comprobar si hay una campaña seleccionada válida
+            if (selectedCampaignId && selectedStartSection) {
+                const playerCount = playerCountSelect.value;
+
+                try {
+                    // Guardar la información en localStorage para que game_play.html la lea
+                    localStorage.setItem('aethelgard_selected_campaign', selectedCampaignId);
+                    localStorage.setItem('aethelgard_player_count', playerCount);
+                    localStorage.setItem('aethelgard_current_section', selectedStartSection); // Guarda la SECCIÓN INICIAL
+                     // Opcional: Limpiar estado de PJ anterior si existe
+                     // localStorage.removeItem('aethelgard_character_state');
+
+                    console.log(`Datos guardados: Campaña=${selectedCampaignId}, Jugadores=${playerCount}, Sección Inicio=${selectedStartSection}.`);
+
+                    // Verificar que se guardó (medida extra)
+                     if (localStorage.getItem('aethelgard_selected_campaign') !== selectedCampaignId) {
+                         throw new Error("LocalStorage no guardó correctamente la campaña.");
+                     }
+
+                    // Redirigir a la página principal del juego
+                     const nextPageUrl = `game_play.html?campaign=${selectedCampaignId}&players=${playerCount}`;
+                     console.log(`Redirigiendo a: ${nextPageUrl}`);
+                     window.location.href = nextPageUrl;
+
+                } catch (error) {
+                     console.error("Error al intentar guardar en localStorage o redirigir:", error);
+                     alert("Hubo un problema al iniciar la aventura. Por favor, asegúrate de que localStorage está habilitado en tu navegador e inténtalo de nuevo.");
+                     selectionError.textContent = `Error: ${error.message || "No se pudo iniciar."}`;
+                     selectionError.style.display = 'block';
+                 }
+
+            } else {
+                // Si se pulsa sin seleccionar (aunque el botón debería estar desactivado)
+                console.error("Intento de empezar sin campaña seleccionada.");
+                selectionError.textContent = "Por favor, selecciona una campaña disponible de la lista.";
+                selectionError.style.display = 'block';
+                startButton.disabled = true;
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethelgard: Crónicas de la Sombra Primigenia - Juego de Rol</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* === Estilos CSS Completos === */
+        :root {
+            --color-background-dark: #1a1a1a;
+            --color-background-section: #252525;
+            --color-text-primary: #cccccc;
+            --color-text-secondary: #a0a0a0;
+            --color-accent-dark-red: #5a0f0f;
+            --color-accent-gold: #b8a975;
+            --color-accent-parchment: #d4c99e;
+            --color-accent-bronze: #e09d54;
+            --color-border-dark: #333;
+            --color-border-light: #444;
+        }
+
+        /* Asegura que el desplazamiento por ancla no quede oculto por la navbar fija */
+        html {
+            scroll-padding-top: 75px; /* Ajusta si altura de navbar cambia */
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--color-background-dark);
+            color: var(--color-text-primary);
+            line-height: 1.7;
+        }
+
+        /* Barra de Navegación */
+        .navbar { background-color: #0d0d0d !important; border-bottom: 3px solid var(--color-accent-dark-red); padding-top: 0.8rem; padding-bottom: 0.8rem; }
+        .navbar-brand, .nav-link { font-family: 'Cinzel Decorative', cursive; color: var(--color-accent-parchment) !important; text-shadow: 1px 1px 2px #000; }
+        .navbar-brand { font-size: 1.7em; }
+        .nav-link:hover { color: var(--color-accent-gold) !important; }
+        .navbar-toggler { border-color: rgba(184, 169, 117, 0.5); }
+        .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(184, 169, 117, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+
+        /* Hero Section */
+        #hero {
+            background: url('dark-fantasy-landscape-misty.jpg') no-repeat center center; /* !!! REEMPLAZA CON TU IMAGEN !!! */
+            background-size: cover; color: #fff; text-align: center;
+            padding: 5rem 1rem; margin-bottom: 30px; position: relative;
+            background-color: #111; border-radius: 5px; border: 1px solid var(--color-border-dark);
+            margin-top: 70px; /* Espacio para navbar fija */
+        }
+        #hero::before { /* Overlay */
+             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+             background-color: rgba(0,0,0,0.65); border-radius: 5px; z-index: 1;
+         }
+        #hero > * { position: relative; z-index: 2; }
+        #hero h1 { font-family: 'Cinzel Decorative', cursive; font-size: 2.8em; margin-bottom: 0.5em; color: var(--color-accent-parchment); text-shadow: 2px 2px 5px #000; }
+        #hero p { font-size: 1.15em; color: var(--color-text-primary); }
+
+        /* Secciones Contenido */
+        .content-section {
+            background-color: var(--color-background-section);
+            margin-bottom: 30px; padding: 30px;
+            border-radius: 5px; border: 1px solid var(--color-border-light);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Títulos */
+        h2 { font-family: 'Cinzel Decorative', cursive; color: var(--color-accent-gold); border-bottom: 1px solid var(--color-border-light); padding-bottom: 10px; margin-bottom: 25px; margin-top: 0; font-size: 1.9em; }
+        h3 { color: var(--color-accent-parchment); margin-top: 1.5rem; margin-bottom: 1rem; font-family: 'Cinzel Decorative', cursive; font-size: 1.5em; }
+        h5 { color: var(--color-accent-gold); margin-top: 1.2rem; margin-bottom: 0.5rem; font-weight: bold; }
+
+        /* Listas */
+        .list-styled { list-style: none; padding-left: 0; }
+        .list-styled li::before { content: "✠ "; color: var(--color-accent-gold); margin-right: 8px; font-weight: bold; }
+        ul:not(.list-styled) { padding-left: 1.5rem; } /* Ajuste padding listas normales */
+        li { margin-bottom: 0.6rem; } /* Ajuste espaciado items lista */
+
+        /* Enlaces y Botones */
+        a { color: var(--color-accent-bronze); text-decoration: none; }
+        a:hover { color: #ffcc88; }
+        .btn-custom-primary { background-color: var(--color-accent-dark-red); border-color: #8a4f4f; color: var(--color-text-primary); font-weight: bold; transition: background-color 0.3s ease, border-color 0.3s ease; margin: 5px; padding: 10px 20px;} /* Ajuste padding botones */
+        .btn-custom-primary:hover { background-color: #8a4f4f; border-color: #a56f6f; color: #fff; }
+        .btn-custom-secondary { background-color: var(--color-accent-gold); border-color: #dbc995; color: var(--color-background-dark); font-weight: bold; transition: background-color 0.3s ease, border-color 0.3s ease; margin: 5px; padding: 10px 20px;} /* Ajuste padding botones */
+        .btn-custom-secondary:hover { background-color: #cfbd8a; border-color: #e6d5a5; color: #000; }
+         /* Iconos en botones (si los usas) */
+         .btn svg { vertical-align: text-bottom; margin-right: 3px;}
+
+
+        /* Footer */
+        footer { text-align: center; margin-top: 40px; padding: 20px 0; font-size: 0.9em; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-dark); }
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    <!-- Barra de Navegación Fija Superior -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">Aethelgard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="#about-game">El Juego</a></li>
+            <li class="nav-item"><a class="nav-link" href="#features">Características</a></li>
+            <li class="nav-item"><a class="nav-link" href="#rules-summary">Reglas Esenciales</a></li>
+             <!-- El enlace de Reiniciar no pertenece a esta página -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sección Hero -->
+    <section id="hero">
+         <div class="container">
+             <h1>Crónicas de la Sombra Primigenia</h1>
+             <p>Un Reino al borde del abismo te necesita. Responde al llamado.</p>
+             <!-- Enlace a Selección Campaña -->
+             <a href="select_campaign.html" class="btn btn-lg btn-custom-primary">Elige tu Aventura</a>
+             <div class="mt-4">
+                 <!-- Enlaces a Recursos -->
+                 <!-- !!! REEMPLAZA href y [URL...] !!! -->
+                 <a href="aethelgard_reglas.pdf" class="btn btn-md btn-custom-secondary" target="_blank" download="Aethelgard_Reglas.pdf">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half me-1" viewBox="0 0 16 16"> <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388 1.175.885.652 1.498 1.559 1.498 2.555 0 1-.613 1.903-1.498 2.554C14.115 9.124 12.846 9.523 11.612 9.647 10.28 9.77 9.152 9.573 8.5 8.884zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.356C-.713 3.079-.998 4.146-.998 5.23c0 1.083.285 2.15.998 2.884 1.145 1.04 2.827 1.655 4.387 1.655 1.254 0 2.41-.316 3.388-.803 1.138-.55 1.986-1.363 2.442-2.252.24-.465.369-.984.369-1.507 0-.522-.13-.1.04-.369-.455-.89-1.304-1.702-2.442-2.252C10.41 2.096 9.254 1.783 8 1.783"/> <path d="M6.5 14.5v-5.793L6.053 8.256h-.01L5.5 8.707v5.793zm-1.442 0L4 14.058V8.707l.053-.047h.01L5.058 8.26v5.793z"/> </svg>
+                    Libro de Reglas (PDF)
+                </a>
+                <a href="[URL_HECHIZOS_SRD_AQUI]" class="btn btn-md btn-custom-secondary ms-lg-2 mt-2 mt-lg-0" target="_blank">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-bookmark-fill me-1" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"/> <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/> </svg>
+                    Libro de Hechizos (SRD)
+                </a>
+                 <a href="aethelgard_ficha_personaje.pdf" class="btn btn-md btn-custom-secondary ms-lg-2 mt-2 mt-lg-0" target="_blank" download="Aethelgard_Ficha_Personaje_Editable.pdf">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person-fill me-1" viewBox="0 0 16 16"> <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2m-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11"/> </svg>
+                     Ficha de Personaje (PDF)
+                 </a>
+            </div>
+         </div>
+    </section>
+
+    <!-- Contenedor Principal -->
+    <div class="container">
+
+        <!-- Área Dinámica Juego (No usada en Index) -->
+        <!-- <div id="game-content"></div> -->
+        <!-- <div id="loading" class="loading-spinner"></div> -->
+
+        <!-- Secciones Informativas Estáticas -->
+        <div id="static-content">
+             <section id="about-game" class="content-section">
+                 <h2>El Juego: Sobrevive a la Oscuridad</h2>
+                 <p><strong>Aethelgard: Crónicas de la Sombra Primigenia</strong> es un juego de rol narrativo inmerso en un mundo de <strong>fantasía oscura</strong> y decadente. Usando un sistema familiar basado en d20 (compatible con SRD 5.1), te embarcarás en aventuras donde tus decisiones y la suerte de los dados definirán tu supervivencia contra horrores ancestrales y la corrupción que devora el reino.</p>
+                 <p>Este formato de "libro-juego digital" te guía a través de escenarios peligrosos, desde los bosques retorcidos hasta las profundidades de minas olvidadas y castillos malditos. Enfréntate a criaturas corrompidas, desentraña misterios arcanos y lucha contra la influencia insidiosa de la <strong>Sombra Primigenia</strong>.</p>
+             </section>
+
+             <section id="features" class="content-section">
+                 <h2>Características Destacadas</h2>
+                 <ul class="list-styled">
+                     <li><strong>Mundo Sombrío Detallado:</strong> Explora Aethelgard, una tierra de belleza rota, secretos y peligros góticos.</li>
+                     <li><strong>Sistema d20 Flexible:</strong> Reglas intuitivas para veteranos y nuevos jugadores, con énfasis en la narrativa.</li>
+                     <li><strong>Progresión de Personaje:</strong> 8 clases únicas con desarrollo hasta Nivel 20, 4 razas con variantes culturales.</li>
+                     <li><strong>Aventura Interactiva:</strong> Navega por las secciones, toma decisiones cruciales y vive las consecuencias de tus actos.</li>
+                     <li><strong>Combate Peligroso:</strong> Cada enfrentamiento es un desafío táctico que puede tener un alto coste. 💀💀💀</li>
+                     <li><strong>Misterio y Elección:</strong> Investiga, explora, interactúa con PNJs complejos y define tu propia crónica.</li>
+                 </ul>
+             </section>
+
+             <section id="rules-summary" class="content-section">
+                 <h2>Reglas Esenciales</h2>
+                 <p>Las acciones con resultado incierto se resuelven con <strong>1d20 + Modificador de Característica relevante</strong> contra una <strong>Dificultad (NO/CD)</strong> fijada por el AJ o la sección. Superar la dificultad es un Éxito ✅, no alcanzarla es un Fallo ❌.</p>
+
+                 <h5>Componentes:</h5>
+                 <ul>
+                     <li>Este libro/página, dados d20, hoja de personaje.</li>
+                 </ul>
+
+                 <h5>Roles:</h5>
+                 <ul>
+                     <li><strong>Jugadores:</strong> Interpretan a los Aventureros, toman decisiones.</li>
+                     <li><strong>Amo del Juego (AJ):</strong> Narra, gestiona PNJs/enemigos, aplica reglas, resuelve resultados.</li>
+                 </ul>
+
+                 <h5>Creación de PJs (Resumen):</h5>
+                 <ul>
+                     <li>Elige Raza/Subraza (modifican stats base 10).</li>
+                     <li>Elige Clase (define stats principales, PV base, habilidades Nvl 1).</li>
+                     <li>Distribuye 5 puntos adicionales a stats (máx 18 inicial).</li>
+                     <li>Calcula Modificadores [(Stat-10)/2], PV Iniciales [PV Base Clase + (Mod CON x Nivel)].</li>
+                     <li>Consulta Ramas Habilidad y Listas Hechizos (SRD 5.1) para tu clase.</li>
+                 </ul>
+
+                 <h5>Combate (Resumen):</h5>
+                 <ul>
+                     <li><strong>Iniciativa:</strong> 1d20 + Mod DES. Orden decreciente.</li>
+                     <li><strong>Turno:</strong> 1 Acción Principal, 1 Movimiento, (Opcional) 1 Acción Adicional/Bonus.</li>
+                     <li><strong>Ataque:</strong> 1d20 + Mod Atq (FUE/DES) + Bonus vs CA Enemigo [10+ModDES+Armadura...].</li>
+                     <li><strong>Daño:</strong> Si impacta -> Dado(s) Arma/Hechizo + Mod Stat relevante.</li>
+                     <li><strong>PV y Muerte:</strong> A 0 PV caes inconsciente. Daño masivo o fallar salvas de muerte puede ser fatal.</li>
+                     <li><strong>Estados Alterados:</strong> Pueden aplicarse condiciones como Envenenado, Aturdido, Derribado, etc.</li>
+                 </ul>
+
+                 <h5>Progreso:</h5>
+                 <ul>
+                    <li>Ganas <strong>Puntos de Experiencia (XP)</strong> por superar secciones, enemigos, y lograr hitos.</li>
+                    <li>Subir de <strong>Nivel</strong> mejora tus PV, bonos, y te da acceso a nuevas Habilidades de Clase y Hechizos (consulta las Ramas de Habilidad y SRD 5.1).</li>
+                 </ul>
+                 <a href="[URL_HECHIZOS_SRD_AQUI]" class="btn btn-sm btn-custom-secondary mt-3" target="_blank">Consulta Listas de Hechizos (SRD 5.1)</a> <!-- !!! REEMPLAZA URL !!! -->
+             </section>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- Pie de Página -->
+    <footer class="mt-5">
+        <div class="container">
+            <p>&copy; 2024 "Aethelgard: Crónicas de la Sombra Primigenia" - [Tu Nombre/Grupo]. Inspirado en SRD 5.1 OGL.</p>
+        </div>
+    </footer>
+
+    <!-- JS Bootstrap (Necesario para navbar y otros componentes si los usas) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SIN JavaScript de juego personalizado en INDEX.HTML -->
+    <script>
+        // Mensaje en consola para indicar que la página de inicio está lista.
+        console.log("Página principal de Aethelgard cargada. Elige tu aventura.");
+    </script>
+
+</body>
+</html>

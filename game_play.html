@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethelgard: Jugando Aventura...</title> <!-- El JS podría actualizar esto -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* === Estilos CSS Completos (Igual que index.html) === */
+        /* Incluye :root, html, body, navbar, hero(aunque no se usa aquí), content-section, títulos, botones, spinner, etc. */
+         :root {
+            --color-background-dark: #1a1a1a; --color-background-section: #252525;
+            --color-text-primary: #cccccc; --color-text-secondary: #a0a0a0;
+            --color-accent-dark-red: #5a0f0f; --color-accent-gold: #b8a975;
+            --color-accent-parchment: #d4c99e; --color-accent-bronze: #e09d54;
+            --color-border-dark: #333; --color-border-light: #444;
+        }
+        html { scroll-padding-top: 75px; scroll-behavior: smooth; }
+        body { font-family: 'EB Garamond', serif; background-color: var(--color-background-dark); color: var(--color-text-primary); line-height: 1.7; padding-top: 70px; /* Espacio para navbar fija */}
+        .navbar { background-color: #0d0d0d !important; border-bottom: 3px solid var(--color-accent-dark-red); padding-top: 0.8rem; padding-bottom: 0.8rem;}
+        .navbar-brand, .nav-link { font-family: 'Cinzel Decorative', cursive; color: var(--color-accent-parchment) !important; text-shadow: 1px 1px 2px #000; }
+        .navbar-brand { font-size: 1.7em; }
+        .nav-link:hover { color: var(--color-accent-gold) !important; }
+        .navbar-toggler { border-color: rgba(184, 169, 117, 0.5); }
+        .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(184, 169, 117, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+        .content-section { background-color: var(--color-background-section); margin-bottom: 30px; padding: 30px; border-radius: 5px; border: 1px solid var(--color-border-light); box-shadow: 0 3px 8px rgba(0,0,0,0.6); transition: opacity 0.5s ease-in-out; }
+        h2 { font-family: 'Cinzel Decorative', cursive; color: var(--color-accent-gold); border-bottom: 1px solid var(--color-border-light); padding-bottom: 10px; margin-bottom: 25px; margin-top: 0; font-size: 1.9em; }
+        h3 { color: var(--color-accent-parchment); margin-top: 1.5rem; margin-bottom: 1rem; font-family: 'Cinzel Decorative', cursive; font-size: 1.5em; }
+         h4.text-danger { /* Estilo "¡Peligro!" */ font-family: 'Cinzel Decorative', cursive; font-weight: bold; }
+         .opcion-button { display: block; width: 100%; text-align: left; margin-bottom: 15px; padding: 12px 15px; font-size: 1.05em; }
+         .opcion-button:hover { background-color: rgba(255, 255, 255, 0.05) !important; }
+         .opcion-tirada { font-style: italic; font-size: 0.85em; color: var(--color-text-secondary); }
+         .loading-spinner { display: none; text-align: center; padding: 40px; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+         .list-styled { list-style: none; padding-left: 0; }
+         .list-styled li::before { content: "✠ "; color: var(--color-accent-gold); margin-right: 8px; font-weight: bold; }
+         ul:not(.list-styled) { padding-left: 1.5rem; }
+         li { margin-bottom: 0.6rem; }
+         a { color: var(--color-accent-bronze); text-decoration: none; }
+         a:hover { color: #ffcc88; }
+         .btn-custom-primary { /* ... igual ... */ }
+         .btn-custom-primary:hover { /* ... */ }
+         .btn-custom-secondary { /* ... igual ... */ }
+         .btn-custom-secondary:hover { /* ... */ }
+         .btn svg { /* ... */ }
+         footer { text-align: center; margin-top: 40px; padding: 20px 0; font-size: 0.9em; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-dark); }
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    <!-- Barra de Navegación -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Aethelgard</a> <!-- Vuelve a Inicio -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">...</button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <!-- Aquí podrías mostrar dinámicamente NombrePJ / Nivel / PV -->
+             <li class="nav-item"><span class="navbar-text me-3" id="char-status">Cargando PJ...</span></li>
+             <li class="nav-item"><a class="nav-link" id="reset-game-link" href="#">Reiniciar Aventura</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Contenedor Principal del Juego -->
+    <div class="container">
+
+        <!-- Área Dinámica donde se cargan las secciones -->
+        <div id="game-content">
+            <p class="text-center p-5 text-secondary">Cargando inicio de campaña...</p>
+        </div>
+
+        <!-- Spinner de carga -->
+        <div id="loading" class="loading-spinner">
+            <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-secondary">Forjando el destino...</p>
+        </div>
+
+    </div><!-- /container -->
+
+    <footer class="mt-5">
+        <div class="container">
+            <p>&copy; 2024 "Aethelgard: Crónicas de la Sombra Primigenia" - [Tu Nombre/Grupo]. Inspirado en SRD 5.1 OGL.</p>
+        </div>
+    </footer>
+
+    <!-- JS Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Nuestro JavaScript Principal -->
+    <script>
+        // --- Referencias DOM ---
+        const gameContentDiv = document.getElementById('game-content');
+        const loadingSpinner = document.getElementById('loading');
+        const resetGameLink = document.getElementById('reset-game-link');
+        const charStatusSpan = document.getElementById('char-status'); // Para mostrar info PJ
+
+        // --- Estado del Juego (Cargado al inicio) ---
+        let characterStats = {};
+        let currentSectionId = null;
+        let campaignId = null;
+        let playerCount = 2; // Valor por defecto
+
+        // --- Funciones Básicas (showLoading, hideLoading, rollD20, getModifier) ---
+        function showLoading() {
+            gameContentDiv.style.opacity = '0';
+            gameContentDiv.innerHTML = ''; // Limpia explícitamente
+            loadingSpinner.style.display = 'flex';
+        }
+        function hideLoading() { loadingSpinner.style.display = 'none'; }
+        function rollD20() { return Math.floor(Math.random() * 20) + 1; }
+        function getModifier(statScore) { return Math.floor(((statScore || 10) - 10) / 2); }
+
+        // --- Actualizar UI del Personaje (Ejemplo Básico) ---
+        function updateCharacterUI() {
+             if(characterStats && characterStats.Name) {
+                 charStatusSpan.textContent = `PJ: ${characterStats.Name} | Nvl: ${characterStats.Level} | PV: ${characterStats.PV_actual_calc}/${characterStats.PV_max_calc} | XP: ${characterStats.XP}`;
+             } else {
+                 charStatusSpan.textContent = "Cargando...";
+             }
+         }
+
+
+        // --- Display Section ---
+        function displaySection(sectionData) {
+             if (!sectionData || !sectionData.id) {
+                 console.error("Error: Datos de sección inválidos:", sectionData);
+                 gameContentDiv.innerHTML = `<p class="text-danger">Error fatal al cargar sección ${currentSectionId}. Intenta reiniciar.</p>`;
+                 hideLoading(); gameContentDiv.style.opacity = '1'; return;
+             }
+
+            // --- ACTUALIZAR ESTADO ---
+            currentSectionId = sectionData.id;
+            localStorage.setItem('aethelgard_current_section', currentSectionId); // Guarda progreso sección
+             // Actualizar titulo de página
+             document.title = `Aethelgard: S${sectionData.id} - ${sectionData.title}`;
+
+             // --- CONSTRUIR HTML ---
+             let contentHTML = `<section class="content-section" id="section-${sectionData.id}">`;
+             contentHTML += `<h2>Sección ${sectionData.id}: ${sectionData.title} <span class="badge bg-secondary ms-2">${sectionData.xp_reward || 0} XP Pot.</span></h2>`;
+             contentHTML += `<p class="lead">${sectionData.description || '...'}</p>`;
+
+            // Enemigos
+            if (sectionData.enemies && sectionData.enemies.length > 0) {
+                contentHTML += '<hr><h4 class="text-danger mt-3 mb-3">¡Peligro!</h4><ul class="list-unstyled">';
+                sectionData.enemies.forEach(enemy => {
+                     let basePV = enemy.pv_base || 10;
+                     let scaledPV = basePV; // Calcular escalado REAL (necesita playerCount)
+                     if (playerCount === 3) scaledPV = Math.ceil(basePV * 1.25);
+                     if (playerCount === 4) scaledPV = Math.ceil(basePV * 1.5);
+                     // else if (playerCount === 1) scaledPV = Math.ceil(basePV * 0.75); // Ejemplo solitario
+
+                    contentHTML += `<li class="text-danger mb-1">${enemy.indicator || '💀'} ${enemy.count || 1} x <strong>${enemy.name}</strong> (PV ~${scaledPV} c/u)</li>`;
+                });
+                contentHTML += '</ul><hr class="mb-4">';
+            }
+
+            // Opciones
+             if (sectionData.options && sectionData.options.length > 0) {
+                 contentHTML += `<h3 class="mt-4">¿Qué hacéis?</h3>`;
+                 sectionData.options.forEach((option, index) => {
+                     // Comprobar si es opción de clase y si el PJ cumple
+                     let disabled = false;
+                     let titleHint = "";
+                     if(option.class_req && (!characterStats.Class || characterStats.Class.toLowerCase() !== option.class_req.toLowerCase())) {
+                         disabled = true;
+                         titleHint = `Requiere ser ${option.class_req}`;
+                     }
+
+                     contentHTML += `<button class="opcion-button btn btn-outline-warning ${disabled ? 'disabled' : ''}" 
+                                             data-option-index="${index}" 
+                                             data-option-logic='${JSON.stringify(option)}' ${disabled ? 'disabled title="'+titleHint+'"' : ''}>`;
+                     contentHTML += `<strong>${index + 1}. ${option.text}</strong>`;
+                     if (option.check) { contentHTML += ` <span class="opcion-tirada">(${option.check.stat.replace('_', ' ')} vs ${option.check.dc})</span>`; }
+                      if(option.class_req) { contentHTML += ` <span class="badge bg-info ms-2">${option.class_req}</span>`; }
+                     contentHTML += `</button>`;
+                 });
+             } else if (sectionData.next_section) { // Continuación Automática/Narrativa
+                 contentHTML += `<p class="mt-4"><em>La historia continúa...</em></p>`;
+                 contentHTML += `<button class="btn btn-custom-primary mt-3" id="continue-story-btn" data-next-section="${sectionData.next_section}">Continuar</button>`;
+             } else { // Fin de ruta/capítulo?
+                  contentHTML += `<p class="mt-4 text-center"><strong>(Has llegado al final de este camino... por ahora.)</strong></p>`;
+                  // Podría ofrecer volver a inicio o a selección campaña
+                  contentHTML += `<div class="text-center mt-3"><a href="index.html" class="btn btn-secondary">Volver a Inicio</a></div>`
+              }
+
+             contentHTML += `</section>`;
+
+             // --- RENDERIZAR y MOSTRAR ---
+             hideLoading();
+             gameContentDiv.innerHTML = contentHTML;
+             gameContentDiv.style.opacity = '1';
+
+             // --- AÑADIR LISTENERS ---
+             addOptionListeners();
+             const continueBtn = document.getElementById('continue-story-btn');
+             if (continueBtn) {
+                  continueBtn.addEventListener('click', (e) => {
+                     let nextSection = e.target.dataset.nextSection;
+                     if(nextSection) fetchSectionData(nextSection, { isContinuation: true });
+                   });
+             }
+             updateCharacterUI(); // Actualizar info PJ en navbar
+         }
+
+
+        // --- Fetch Section Data (SIMULADO - EL CORAZÓN A REEMPLAZAR POR BACKEND) ---
+        // Necesita los datos JSON de todas las secciones
+         async function fetchSectionData(sectionIdToLoad, choiceResult = null) {
+             showLoading();
+             console.log(`FETCH: campaign=${campaignId}, players=${playerCount}, targetSection=${sectionIdToLoad}`, "choiceResult=", choiceResult);
+             // ***** INICIO SIMULACIÓN BACKEND *****
+             await new Promise(resolve => setTimeout(resolve, 500));
+             let backendResponse = { nextSectionData: null, updatedCharacterStats: characterStats };
+
+            try {
+                 // Lógica principal de juego (Simulada)
+                 backendResponse = await gameLogicGetSection(campaignId, sectionIdToLoad, characterStats, choiceResult, playerCount);
+
+                 // Si hay error desde la lógica simulada
+                  if (!backendResponse.nextSectionData) {
+                       throw new Error(`Sección ${sectionIdToLoad} o resultado post-elección no generados.`);
+                   }
+
+             } catch (error) {
+                 console.error("Error en fetchSectionData (simulado):", error);
+                 backendResponse.error = error.message || "Error desconocido en la lógica del juego.";
+                  backendResponse.nextSectionData = {id: 'error', title:'Error Fatal', description: `No se pudo cargar la sección o procesar la opción: ${error.message}`, options:[]};
+             }
+            // ***** FIN SIMULACIÓN BACKEND *****
+
+             // Procesar respuesta
+             if (backendResponse.error) {
+                 console.error("Error recibido:", backendResponse.error);
+                 displaySection({id:'error', title:'Error', description: backendResponse.error, options:[] }); // Muestra error en UI
+             } else {
+                 characterStats = backendResponse.updatedCharacterStats || characterStats;
+                 localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats)); // Guardar estado PJ
+                 displaySection(backendResponse.nextSectionData);
+             }
+         }
+
+        // --- Handle Option Choice (Igual, llama a fetch) ---
+        function handleOptionChoice(event) {
+             const button = event.target.closest('button.opcion-button');
+             if (!button || button.disabled) return;
+
+            const optionIndex = parseInt(button.dataset.optionIndex, 10);
+            const optionLogic = JSON.parse(button.dataset.optionLogic);
+            const check = optionLogic.check;
+             let rollResult = null; let modifier = 0; let success = true;
+             let earnedXp = 0; let penalty = null; let nextSteps = {};
+
+             if (check) {
+                let statName = check.stat.toUpperCase().split('_')[0];
+                let statValue = characterStats[statName] || 10;
+                 modifier = getModifier(statValue); let diceRoll = rollD20();
+                 rollResult = diceRoll + modifier; success = rollResult >= check.dc;
+                 console.log(`Check: ${check.stat} (Roll ${diceRoll}+${modifier}=${rollResult}) vs DC ${check.dc} -> ${success ? 'SUCCESS' : 'FAILURE'}`);
+                 nextSteps = success ? optionLogic.next.success : optionLogic.next.failure;
+             } else {
+                 success = true; nextSteps = optionLogic.next || {};
+                 console.log(`No check required.`);
+             }
+            earnedXp = nextSteps.xp || 0; penalty = nextSteps.penalty || null;
+             let targetSectionId = nextSteps.sectionId;
+             let combatSetup = nextSteps.combat_setup || null;
+             let path = nextSteps.path || null;
+
+             fetchSectionData(currentSectionId, { // ID Actual + Resultado Elección
+                 optionIndex: optionIndex, roll: rollResult, success: success,
+                 earnedXp: earnedXp, penalty: penalty,
+                 targetSectionId: targetSectionId, combat_setup: combatSetup, path: path
+             });
+        }
+
+
+        // --- Add Listeners a Botones Dinámicos ---
+        function addOptionListeners() {
+             const optionButtons = gameContentDiv.querySelectorAll('.opcion-button:not(.disabled)'); // Ignorar botones disabled
+             optionButtons.forEach(button => {
+                 // Quitar listener viejo explícitamente antes de añadir
+                  button.removeEventListener('click', handleOptionChoice);
+                  button.addEventListener('click', handleOptionChoice);
+             });
+         }
+
+        // --- Reset Game (Igual, redirige a index) ---
+         resetGameLink.addEventListener('click', (e) => { /* ... */ });
+         function resetGame() { /* ... redirige a index.html ... */ }
+
+        // --- SIMULACIÓN LÓGICA Y DATOS (DEBE SER REEMPLAZADO POR BACKEND REAL) ---
+        // Expandir con todas las secciones de la campaña seleccionada (campaignId)
+         const gameData = { /* ... Mismo objeto gameSections que antes con más secciones si es posible ... */ };
+        // Esta función ahora necesita MÁS lógica para manejar choiceResult y devolver estado pj actualizado
+         async function gameLogicGetSection(campId, targetId, char, choice, players = 2) {
+             // 1. Carga sección objetivo
+             let nextSection = (gameData[campId] && gameData[campId][targetId]) ? JSON.parse(JSON.stringify(gameData[campId][targetId])) : null; // Clona para evitar modificar original
+              let updatedChar = JSON.parse(JSON.stringify(char)); // Clona estado PJ
+
+             if (!nextSection) {
+                 return { nextSectionData: gameData[campId]['error'] || null, updatedCharacterStats: updatedChar };
+             }
+
+             // 2. Aplica consecuencias/recompensas de la ELECCIÓN ANTERIOR ('choice')
+              if(choice){
+                   updatedChar.XP += choice.earnedXp || 0;
+                  console.log(`XP Aplicado: +${choice.earnedXp || 0}. Nuevo Total (simulado): ${updatedChar.XP}`);
+                   // Aplicar Penalizaciones (Ejemplo simple)
+                   if(choice.penalty === 'lose_ration') { /* ... lógica inventario ... */ console.warn("PENALTY ACTION: Lose ration");}
+                   if(choice.penalty === 'lose_hp_2') { updatedChar.PV_actual_calc -= 2; console.warn("PENALTY ACTION: Lose 2 PV"); }
+                   // Más lógica para daño, objetos, subir nivel (si XP alcanza umbral), etc.
+
+                   // Manejo Placeholder Combate
+                    if (targetId === 'combat_placeholder') {
+                       console.log("HANDLING COMBAT PLACEHOLDER");
+                       nextSection = JSON.parse(JSON.stringify(gameData[campId]['combat_placeholder'])); // Carga el nodo combate
+                       nextSection.description += ` (Config: ${choice.combat_setup || 'normal'}). Al terminar, irás a sección ${choice.targetSectionAfterCombat || 'error'}.`;
+                       // BOTÓN SIMULADO PARA TERMINAR COMBATE:
+                       nextSection.options = [{
+                             text: "Terminar Combate (Simulado)",
+                              next: { sectionId: choice.targetSectionAfterCombat || 'error', xp: 150 } // XP Ejemplo combate
+                         }];
+                       console.log("Combat Placeholder generated:", nextSection);
+                     }
+               }
+
+
+              // 3. Prepara datos sección para devolver (ajusta PV enemigos según 'players')
+              if(nextSection.enemies){
+                  nextSection.enemies.forEach(enemy => {
+                      let basePV = enemy.pv_base || 10;
+                      if (players === 3) enemy.scaled_pv = Math.ceil(basePV * 1.25);
+                      else if (players === 4) enemy.scaled_pv = Math.ceil(basePV * 1.5);
+                      // else if (players === 1) enemy.scaled_pv = Math.ceil(basePV * 0.75);
+                      else enemy.scaled_pv = basePV;
+                      // Reemplazamos o añadimos la propiedad con el PV escalado
+                       enemy.description_pv = `PV ~${enemy.scaled_pv}`; // Para mostrarlo fácilmente
+                   });
+               }
+
+             return { nextSectionData: nextSection, updatedCharacterStats: updatedChar };
+         }
+
+
+        // ----- INICIO AL CARGAR PÁGINA -----
+        window.addEventListener('load', () => {
+            // Lee datos de localStorage o URL
+            campaignId = localStorage.getItem('aethelgard_selected_campaign') || new URLSearchParams(window.location.search).get('campaign');
+            playerCount = parseInt(localStorage.getItem('aethelgard_player_count') || new URLSearchParams(window.location.search).get('players') || '2', 10);
+            let initialSection = localStorage.getItem('aethelgard_current_section') || '1'; // Sección guardada o '1'
+
+            if (!campaignId) {
+                 gameContentDiv.innerHTML = '<p class="text-danger text-center p-5">Error: Campaña no especificada. <a href="select_campaign.html">Selecciona una aventura</a>.</p>';
+                 return;
+             }
+
+            // Carga estado personaje guardado O crea uno inicial
+             const savedCharState = localStorage.getItem('aethelgard_character_state');
+             if (savedCharState && false) { // Deshabilitado para forzar inicio por ahora
+                 characterStats = JSON.parse(savedCharState);
+                 initialSection = localStorage.getItem('aethelgard_current_section') || initialSection; // Asegura cargar última sección
+                 console.log("Estado personaje cargado", characterStats);
+             } else {
+                 console.log("Creando/Usando personaje inicial de ejemplo.");
+                  characterStats = { FUE: 14, DES: 12, CON: 15, INT: 10, SAB: 13, CAR: 8, XP: 0, PV_max_calc: 24, PV_actual_calc: 24, Level: 1, Inventory: ["Espada Corta", "Armadura Cuero", "Antorcha x1"], Name: "Viajero", Class:"Guerrero" }; // Añadida Clase Ejemplo
+                  localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats));
+                 localStorage.setItem('aethelgard_current_section', initialSection);
+             }
+            updateCharacterUI();
+
+            // Inicia el juego cargando la sección inicial/guardada
+            fetchSectionData(initialSection);
+        });
+
+    </script>
+
+</body>
+</html>
