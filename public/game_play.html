@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethelgard: Jugando...</title>
+    <!-- CSS (Bootstrap, Google Fonts, Estilos Personalizados) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* === Estilos Completos (Igual que antes) === */
+        :root { /* ... Variables CSS ... */ } html { /* ... scroll-padding ... */ } body { /* ... */ } .navbar { /* ... */ } /* ... */
+        .content-section { /* Estilo para secciones NARRATIVAS */ }
+        h2 { /* Estilo título sección NARRATIVA */ }
+        /* --- === NUEVOS Estilos para UI Combate === --- */
+        #combat-interface {
+             background-color: #1f1f1f; /* Fondo ligeramente distinto para combate */
+             border: 2px solid var(--color-accent-dark-red);
+             border-radius: 5px; padding: 25px; margin-bottom: 30px;
+             box-shadow: 0 3px 8px rgba(138, 79, 79, 0.4); /* Sombra rojiza */
+             display: none; /* Oculto por defecto */
+         }
+         #combat-header { text-align: center; margin-bottom: 2rem; }
+         #combat-header h2 { color: var(--color-accent-dark-red); font-size: 2.2em; border-bottom: none;}
+         #combat-round-turn { font-size: 1.1em; color: var(--color-text-secondary); font-weight: bold; }
+         #combatant-list { list-style: none; padding: 0; margin-bottom: 2rem; }
+         .combatant {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; margin-bottom: 5px; border-radius: 4px;
+            border: 1px solid var(--color-border-dark);
+            background-color: var(--color-background-section); /* Fondo normal */
+        }
+        .combatant.is-pj { border-left: 4px solid var(--color-accent-gold); } /* Indicador PJ */
+        .combatant.is-enemy { border-left: 4px solid var(--color-accent-dark-red); } /* Indicador Enemigo */
+        .combatant.current-turn { /* Resalta turno actual */
+            border-color: var(--color-accent-bronze);
+            background-color: #333; /* Fondo resaltado */
+            font-weight: bold;
+        }
+        .combatant.is-down { opacity: 0.5; text-decoration: line-through; background-color: #111;} /* Caído */
+        .combatant-name { color: var(--color-text-primary); }
+        .combatant-hp { font-size: 0.9em; color: var(--color-text-secondary); font-weight: normal;}
+        .combatant-status { font-size: 0.85em; font-style: italic; color: var(--color-text-secondary);}
+
+        #player-actions { padding: 20px; border-top: 1px solid var(--color-border-light); margin-top: 20px;}
+        #player-actions h3 { color: var(--color-accent-parchment); font-size: 1.4em; text-align: center; margin-bottom: 15px;}
+        #action-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;}
+        #action-details { background-color: #111; padding: 15px; border-radius: 4px; border: 1px solid var(--color-border-dark); margin-top: 20px;}
+
+        #combat-log {
+             margin-top: 2rem; padding: 15px;
+             background-color: rgba(0,0,0,0.3); border: 1px solid var(--color-border-dark);
+             border-radius: 4px; max-height: 200px; overflow-y: auto; font-size: 0.95em;
+             color: var(--color-text-secondary);
+         }
+        #combat-log p { margin-bottom: 0.5em; line-height: 1.5;}
+        #combat-log p:last-child { font-weight: bold; color: var(--color-text-primary); } /* Resalta última acción */
+
+         /* ... Otros estilos de index.html si aplican ... */
+         .loading-spinner { display: none; /* ... */ }
+         footer { /* ... */ }
+         a { /* ... */ } .btn-custom-primary { /* ... */ } .btn-custom-secondary { /* ... */ }
+
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    <nav class="navbar ..."> <!-- Navbar como antes --> </nav>
+
+    <div class="container">
+
+        <!-- Área Principal: Muestra contenido NARRATIVO o UI de COMBATE -->
+        <div id="game-content">
+             <!-- Contenido inicial de carga o sección narrativa se inyectará aquí -->
+              <p class="text-center p-5 text-secondary">Cargando aventura...</p>
+
+
+             <!-- ======= INICIO Interfaz de Combate ======= -->
+             <!-- (Inicialmente oculto via CSS/JS)       -->
+             <div id="combat-interface" style="display: none;">
+
+                 <!-- Cabecera -->
+                 <div id="combat-header" class="mb-4">
+                     <h2 class="text-danger mb-1">¡EN COMBATE!</h2>
+                     <div id="combat-round-turn" class="text-secondary">Ronda: 1 | Turno de: Cargando...</div>
+                 </div>
+
+                <!-- Lista Combatientes -->
+                <div class="row">
+                    <div class="col-lg-6 mb-3 mb-lg-0">
+                         <h3 class="h5 text-success">Grupo</h3>
+                         <ul id="combatant-list-pjs" class="list-unstyled"></ul>
+                     </div>
+                    <div class="col-lg-6">
+                        <h3 class="h5 text-danger">Enemigos</h3>
+                        <ul id="combatant-list-enemies" class="list-unstyled"></ul>
+                    </div>
+                </div>
+
+
+                 <!-- Acciones del Jugador (Mostrar solo si es turno del PJ y hay acciones) -->
+                 <div id="player-actions" style="display: none;">
+                     <h3 class="text-warning">Tu Turno:</h3>
+                     <div id="action-buttons" class="mb-3 text-center">
+                         <button class="btn btn-sm btn-custom-primary" data-action-type="attack">Atacar</button>
+                         <button class="btn btn-sm btn-custom-secondary" data-action-type="cast_spell">Hechizo</button>
+                         <button class="btn btn-sm btn-outline-info" data-action-type="dodge">Esquivar</button>
+                         <button class="btn btn-sm btn-outline-success" data-action-type="use_item">Objeto</button>
+                         <button class="btn btn-sm btn-outline-light" data-action-type="move">Mover (Desc)</button>
+                         <button class="btn btn-sm btn-outline-secondary" data-action-type="end_turn">Terminar Turno</button>
+                     </div>
+                     <!-- Detalles/Selección para acción elegida -->
+                     <div id="action-details" class="bg-dark p-3 rounded border border-secondary" style="display:none;">
+                          <!-- Selección de Objetivo -->
+                          <div id="targeting-module" style="display: none;">
+                               <label for="target-select" class="form-label">Objetivo:</label>
+                               <select id="target-select" class="form-select form-select-sm mb-2"></select>
+                           </div>
+                           <!-- Selección de Hechizo -->
+                           <div id="spell-module" style="display: none;">
+                               <label for="spell-select" class="form-label">Hechizo:</label>
+                               <select id="spell-select" class="form-select form-select-sm mb-2"></select>
+                            </div>
+                           <!-- Selección de Item -->
+                            <div id="item-module" style="display: none;">
+                                <label for="item-select" class="form-label">Objeto:</label>
+                                <select id="item-select" class="form-select form-select-sm mb-2"></select>
+                            </div>
+
+                           <!-- Botón Confirmar -->
+                           <button id="confirm-action-btn" class="btn btn-success btn-sm w-100 mt-2">Confirmar Acción</button>
+                     </div>
+                 </div>
+
+                 <!-- Log de Combate -->
+                 <div id="combat-log" class="mt-4">
+                     <p><em>El combate comienza...</em></p>
+                 </div>
+
+             </div>
+            <!-- ======== FIN Interfaz de Combate ======== -->
+
+        </div><!-- fin #game-content -->
+
+        <div id="loading" class="loading-spinner">...</div>
+
+    </div><!-- /container -->
+
+    <footer class="mt-5">...</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // === JavaScript Principal (Adaptado para la nueva UI Combate) ===
+
+        // --- Referencias DOM ---
+        const gameContentDiv = document.getElementById('game-content');
+        const loadingSpinner = document.getElementById('loading');
+        const resetGameLink = document.getElementById('reset-game-link');
+        const charStatusSpan = document.getElementById('char-status');
+        // UI Combate Refs
+        const combatInterfaceDiv = document.getElementById('combat-interface'); // Contenedor principal combate
+        const combatHeaderTitle = combatInterfaceDiv.querySelector('#combat-header h2');
+        const combatRoundTurnDiv = document.getElementById('combat-round-turn');
+        const combatantListPJs = document.getElementById('combatant-list-pjs');
+        const combatantListEnemies = document.getElementById('combatant-list-enemies');
+        const playerActionsDiv = document.getElementById('player-actions');
+        const actionButtonsDiv = document.getElementById('action-buttons');
+        const actionDetailsDiv = document.getElementById('action-details');
+        const targetingModule = document.getElementById('targeting-module');
+        const targetSelect = document.getElementById('target-select');
+        const spellModule = document.getElementById('spell-module');
+        const spellSelect = document.getElementById('spell-select');
+        const itemModule = document.getElementById('item-module');
+        const itemSelect = document.getElementById('item-select');
+        const confirmActionButton = document.getElementById('confirm-action-btn');
+        const combatLogDiv = document.getElementById('combat-log');
+
+        // --- Estado del Juego ---
+        let characterStats = {}; let currentSectionId = null; let campaignId = null;
+        let playerCount = 2; let currentCombatState = null;
+
+        // --- Funciones Básicas ---
+        function showLoading() { gameContentDiv.innerHTML = ''; combatInterfaceDiv.style.display='none'; loadingSpinner.style.display='flex'; /* ... centro ...*/ }
+        function hideLoading() { loadingSpinner.style.display = 'none'; }
+        function rollD20() { return Math.floor(Math.random() * 20) + 1; }
+        function getModifier(statScore) { return Math.floor(((statScore || 10) - 10) / 2); }
+        function updateCharacterUI() { /* ... igual ... */ }
+
+        // --- DISPLAY SECTION (Muestra contenido Narrativo) ---
+        function displaySection(sectionData) {
+            if (!sectionData || !sectionData.id) { /* ... manejo error ... */ return; }
+            hideLoading();
+            combatInterfaceDiv.style.display = 'none'; // Oculta combate
+            // Limpia y construye HTML sección narrativa (como antes)
+            let contentHTML = `<section class="content-section" id="section-${sectionData.id}">...</section>`;
+            gameContentDiv.innerHTML = contentHTML; // Asigna el contenido construido
+            gameContentDiv.style.display = 'block'; // Asegura visible
+
+            currentSectionId = sectionData.id;
+            // ... (resto como antes: localStorage, title, addOptionListeners, updateCharacterUI) ...
+             addNarrativeOptionListeners(); // Llama a la función específica para opciones narrativas
+             updateCharacterUI();
+            console.log("Displaying Narrative Section:", currentSectionId);
+        }
+
+        // --- DISPLAY COMBAT UI (Adaptado a nueva estructura HTML) ---
+        function displayCombat(combatState) {
+             if (!combatState || !combatState.combatants) { /* ... manejo error ... */ return; }
+             currentCombatState = combatState; currentSectionId = `combat_${combatState.combat_instance_id}`;
+             localStorage.setItem('aethelgard_current_section', currentSectionId);
+             hideLoading(); gameContentDiv.innerHTML = ''; // Limpiar por si acaso
+             gameContentDiv.style.display = 'none'; combatInterfaceDiv.style.display = 'block'; // Mostrar UI Combate
+             document.title = `Aethelgard: Combate Ronda ${combatState.round_number}`;
+
+             // Rellenar Cabecera
+             combatRoundTurnDiv.textContent = `Ronda: ${combatState.round_number}`;
+
+             // Rellenar Listas Combatientes
+             combatantListPJs.innerHTML = ''; combatantListEnemies.innerHTML = '';
+             const currentTurnId = combatState.turn_order[combatState.current_turn_index];
+             combatState.combatants.forEach(c => {
+                 const li = document.createElement('li');
+                 li.classList.add('combatant');
+                 li.dataset.combatantId = c.temp_id; // Guardar ID temporal
+                 li.classList.toggle('is-pj', c.is_pj);
+                 li.classList.toggle('is-enemy', !c.is_pj);
+                 li.classList.toggle('current-turn', c.temp_id === currentTurnId);
+                 li.classList.toggle('is-down', c.current_pv <= 0);
+
+                 const hpPercent = c.max_pv > 0 ? (c.current_pv / c.max_pv) * 100 : 0;
+                 let hpColorClass = hpPercent > 60 ? 'text-success' : hpPercent > 25 ? 'text-warning' : 'text-danger';
+                 if(c.current_pv <= 0) hpColorClass = 'text-muted';
+
+                 li.innerHTML = `
+                     <span class="combatant-name">${c.indicator || ''} ${c.name}</span>
+                      <div> <!-- Grupo para HP y Status -->
+                         <span class="combatant-hp ${hpColorClass} fw-bold">${c.current_pv}/${c.max_pv} PV</span>
+                         <span class="combatant-status ms-2">${c.current_pv <= 0 ? '(Caído)' : (c.status_effects?.length > 0 ? `(${c.status_effects.join(', ')})` : '(Activo)')}</span>
+                     </div>
+                 `;
+                  if(c.is_pj) combatantListPJs.appendChild(li); else combatantListEnemies.appendChild(li);
+             });
+
+            // Actualizar Indicador Turno principal
+             const currentCombatant = combatState.combatants.find(c => c.temp_id === currentTurnId);
+            if (currentCombatant) {
+                 combatRoundTurnDiv.innerHTML = `Ronda: ${combatState.round_number} | Turno de: <strong class="${currentCombatant.is_pj ? 'text-success' : 'text-danger'}">${currentCombatant.name}</strong>`;
+                 playerActionsDiv.style.display = (currentCombatant.is_pj && currentCombatant.original_id == characterStats.character_id) ? 'block' : 'none'; // Muestra si es el jugador actual
+                 actionDetailsDiv.style.display = 'none'; // Ocultar detalles por defecto
+             } else { combatRoundTurnDiv.textContent = "Error determinando turno."; playerActionsDiv.style.display = 'none'; }
+
+            // Rellenar Log
+             combatLogDiv.innerHTML = '';
+             (combatState.combat_log || ["Inicio combate."]).forEach(logEntry => {
+                  const p = document.createElement('p');
+                  p.innerHTML = logEntry.startsWith('***') || logEntry.startsWith('---') ? `<strong>${logEntry}</strong>` : logEntry; // Resaltar inicio ronda/turno
+                  if (logEntry.includes('caído') || logEntry.includes('Derrota')) p.classList.add('text-danger');
+                   if (logEntry.includes('¡Impacto!') || logEntry.includes('¡VICTORIA!')) p.classList.add('text-warning');
+                 combatLogDiv.appendChild(p);
+             });
+             combatLogDiv.scrollTop = combatLogDiv.scrollHeight;
+
+             addCombatActionListeners(); // Añade listeners a los botones de ESTA interfaz
+             updateCharacterUI(); // Actualizar navbar
+             console.log("Displaying Combat UI. Turn:", currentCombatant?.name);
+        }
+
+        async function fetchSectionData(sectionIdToLoad, choiceResult = null) {
+        showLoading();
+        console.log(`FETCH: Camp=${campaignId}, players=${playerCount}, target=${sectionIdToLoad}`, "choiceResult=", choiceResult);
+
+        // --- CORRECCIÓN AQUÍ ---
+        // Decide qué endpoint llamar y construye el payload EXPLICITAMENTE
+        let apiPath = '';
+        let payload = {};
+
+        if (choiceResult) {
+            // Si hay choiceResult, es porque se eligió una opción, llamamos a make_choice
+            apiPath = '/api/make_choice';
+            payload = {
+                // Datos necesarios para procesar la elección en el backend
+                characterId: characterStats.character_id,
+                currentSectionId: currentSectionId, // ID de la sección DESDE la que se eligió
+                campaignId: campaignId,
+                optionIndex: choiceResult.optionIndex,
+                roll: choiceResult.roll,     // Resultado de la tirada (si hubo)
+                success: choiceResult.success, // Booleano éxito/fallo (si hubo tirada)
+                // Pasa también la info calculada por el frontend basada en la lógica next:
+                earnedXp: choiceResult.earnedXp,
+                penalty: choiceResult.penalty,
+                targetSectionId: choiceResult.targetSectionId,
+                combat_setup: choiceResult.combat_setup,
+                path: choiceResult.path,
+                // Podrías enviar el characterStats aquí si el backend lo necesitara TODO,
+                // pero es mejor que el backend lo cargue desde DB por seguridad/consistencia.
+                 // characterStats_snapshot: characterStats // Opcional
+             };
+        } else {
+            // Si no hay choiceResult, solo estamos pidiendo datos de una sección, llamamos a get_section
+            apiPath = '/api/get_section';
+            payload = {
+                // Datos necesarios para obtener la sección correcta
+                sectionId: sectionIdToLoad,
+                campaignId: campaignId,
+                characterId: characterStats.character_id // Para que backend pueda filtrar opciones según estado PJ
+            };
+        }
+
+            try {
+                const response = await fetch(apiPath, {
+                    method: 'POST',                             // Especifica el método POST
+                    headers: { 'Content-Type': 'application/json' }, // Indica que envías JSON
+                    body: JSON.stringify(payload)               // Convierte el objeto payload a string JSON y lo envía
+                });
+                 const data = await response.json();
+                 if (!response.ok) throw new Error(data.error || `Error ${response.status}`);
+
+                if (data.redirect) { /* ... redirect ... */ }
+                else if (data.startCombat) { displayCombat(data.combatData); /* actualizar PJ stats si hubo pre-cambio */ } // INICIA COMBATE
+                 else if (data.combatEnded) { /* actualizar PJ stats final; */ if(data.nextSectionData) displaySection(data.nextSectionData); /* muestra sección post-combate */ currentCombatState = null; } // FIN COMBATE
+                 else if (data.combatState) { displayCombat(data.combatState); /* actualiza PJ stats parcial si vino */} // CONTINUA COMBATE
+                 else if (data.nextSectionData) { /* actualizar PJ stats; */ displaySection(data.nextSectionData); /* sección narrativa */ }
+                else { throw new Error("Respuesta servidor inválida."); }
+
+            } catch (error) { /* ... manejo error UI ... */ }
+            finally { hideLoading(); }
+        }
+
+        // --- HANDLERS (Separar Lógica Narrativa de Combate) ---
+        function addNarrativeOptionListeners() {
+             gameContentDiv.querySelectorAll('section:not(#combat-interface) button.opcion-button:not(.disabled)').forEach(button => {
+                 button.removeEventListener('click', handleNarrativeOptionChoice);
+                 button.addEventListener('click', handleNarrativeOptionChoice);
+             });
+             // ... listeners para botón 'Continuar' narrativo ...
+         }
+         function handleNarrativeOptionChoice(event) { /* Igual que 'handleOptionChoice' antiguo, calcula choiceResult y llama fetchSectionData */ }
+
+         // Nuevo handler para botones ACCIÓN combate
+        let pendingCombatAction = null; // Guarda acción a confirmar
+        function addCombatActionListeners() {
+             actionButtonsDiv.querySelectorAll('button.btn').forEach(button => {
+                 button.removeEventListener('click', handleCombatActionSelection);
+                 button.addEventListener('click', handleCombatActionSelection);
+             });
+             confirmActionButton.removeEventListener('click', sendConfirmedCombatAction);
+             confirmActionButton.addEventListener('click', sendConfirmedCombatAction);
+        }
+         function handleCombatActionSelection(event) {
+              const actionType = event.target.dataset.actionType;
+              console.log(`Selected combat action: ${actionType}`);
+              pendingCombatAction = { type: actionType };
+
+             // Ocultar todos los módulos de detalles
+              targetingModule.style.display = 'none';
+              spellModule.style.display = 'none';
+              itemModule.style.display = 'none';
+               actionDetailsDiv.style.display = 'none'; // Ocultar contenedor detalles por defecto
+
+
+             // Lógica para mostrar detalles según acción
+              if (actionType === 'attack' || actionType === 'cast_spell') {
+                   // Llenar Selector de Objetivos
+                   targetSelect.innerHTML = '';
+                   const PJsTurn = currentCombatState.combatants.find(c => c.temp_id === currentCombatState.turn_order[currentCombatState.current_turn_index])?.is_pj;
+                    currentCombatState.combatants.forEach(c => {
+                        if (c.temp_id !== currentCombatState.turn_order[currentCombatState.current_turn_index] && c.current_pv > 0 && c.is_pj !== PJsTurn){
+                            const option = document.createElement('option'); option.value = c.temp_id; option.textContent = `${c.name} (${c.current_pv} PV)`; targetSelect.appendChild(option);
+                        }
+                     });
+                    if (targetSelect.options.length > 0) {
+                         targetingModule.style.display = 'block'; // Mostrar targets
+                        if (actionType === 'cast_spell') {
+                             // TODO: Llenar selector hechizos aquí basado en characterStats.spells_known_json / prepared
+                              spellModule.style.display = 'block';
+                         }
+                         actionDetailsDiv.style.display = 'block'; // Mostrar contenedor detalles
+                     } else { pendingCombatAction = null; alert("No hay objetivos válidos."); }
+
+              } else if (actionType === 'use_item') {
+                    // TODO: Llenar selector items aquí basado en characterStats.inventory_json
+                     itemModule.style.display = 'block';
+                    actionDetailsDiv.style.display = 'block';
+                } else if (actionType === 'end_turn'){
+                    // Enviar acción 'end_turn' directamente
+                     sendConfirmedCombatAction();
+                }
+                else {
+                 // Acciones sin selección adicional (Dodge, Move - aunque move podría tener target) -> Enviar ya
+                  sendConfirmedCombatAction();
+              }
+          }
+          function sendConfirmedCombatAction() {
+            if (!pendingCombatAction) {
+                console.log("sendConfirmedCombatAction llamado sin acción pendiente.");
+                return; // Salir si no hay nada que enviar
+             }
+
+             // Recoger datos adicionales (objetivo, hechizo, item) si es necesario
+              if (pendingCombatAction.type === 'attack' || pendingCombatAction.type === 'cast_spell') {
+                 if (!targetSelect.value) { alert("Selecciona un objetivo."); pendingCombatAction = null; return; }
+                 pendingCombatAction.target_temp_id = targetSelect.value;
+             }
+             // if (pendingCombatAction.type === 'cast_spell') { pendingCombatAction.spell_id = spellSelect.value; } // Añadir si implementas selector
+             // if (pendingCombatAction.type === 'use_item') { pendingCombatAction.item_id = itemSelect.value; } // Añadir si implementas selector
+
+
+             console.log("Enviando acción confirmada al backend:", pendingCombatAction);
+            playerActionsDiv.style.display = 'none'; // Ocultar botones mientras procesa
+            showLoading(); // Mostrar spinner
+
+            // --- INICIO LLAMADA FETCH CORRECTA ---
+            fetch('/api/combat/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ // Objeto que se envía como JSON
+                    combatId: currentCombatState.combat_instance_id, // ID del combate activo
+                    characterId: characterStats.character_id,         // ID del PJ que realiza acción
+                    action: pendingCombatAction                     // El objeto con tipo, target, etc.
+                }) // Fin del JSON.stringify
+            }) // <-- Fin del objeto de opciones del fetch (el segundo argumento)
+            // --- FIN LLAMADA FETCH CORRECTA ---
+
+            // --- INICIO MANEJO DE RESPUESTA ---
+            .then(res => { // Procesar la respuesta HTTP inicial
+                if (!res.ok) { // Si el servidor devolvió error (4xx, 5xx)
+                    // Intenta obtener mensaje de error del cuerpo JSON
+                     return res.json().then(errData => { throw new Error(errData.error || `Error HTTP ${res.status}`) })
+                                     .catch(() => { throw new Error(`Error HTTP ${res.status}: ${res.statusText}`) }); // Fallback si cuerpo no es JSON
+                 }
+                 return res.json(); // Si respuesta OK (2xx), convierte el cuerpo a objeto JS
+             })
+                         // ... Código anterior del fetch (llamada, .then(res=>res.json())) ...
+
+            .then(data => { // Procesar los DATOS JS recibidos del backend
+                console.log("Respuesta recibida:", data);
+
+                // Actualizar Estado del Personaje SIEMPRE si viene en la respuesta
+                if (data.updatedCharacterStats) {
+                     characterStats = data.updatedCharacterStats;
+                      localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats));
+                      updateCharacterUI(); // Actualiza la info en la navbar, etc.
+                      console.log("Estado PJ actualizado y guardado localmente.");
+                  }
+
+                // --- === PROCESAR RESPUESTA - CÓDIGO COMPLETO === ---
+                if (data.redirect) { // 1. Comprobar Redirección
+                      console.log("Redirigiendo a:", data.redirect);
+                      window.location.href = data.redirect;
+                      // No necesitamos return si es el último bloque de lógica antes del catch/finally
+                }
+                else if (data.startCombat && data.combatData) { // 2. Comprobar Inicio Combate
+                     console.log("Recibida señal START COMBAT", data.combatData);
+                     const combatSectionId = `combat:${data.combatData.combat_instance_id}`;
+                      localStorage.setItem('aethelgard_current_section', combatSectionId);
+                      currentSectionId = combatSectionId; // Actualizar estado JS también
+                     displayCombat(data.combatData); // Llama a la función que muestra la UI de combate
+                 }
+                 else if (data.combatEnded) { // 3. Comprobar Fin Combate
+                      console.log(`Combate Terminado! Victoria: ${data.victory}`, data.nextSectionData);
+                      currentCombatState = null; // Limpiar estado combate local
+                       if (data.nextSectionData && data.nextSectionData.id !== 'error') {
+                          localStorage.setItem('aethelgard_current_section', data.nextSectionData.id);
+                          displaySection(data.nextSectionData); // Muestra sección narrativa post-combate
+                      } else {
+                          localStorage.removeItem('aethelgard_current_section');
+                           displaySection({id:'error', title:'Fin Combate/Error', description:'Combate finalizado, pero no se especificó sección válida.', options:[{text:"Volver a Inicio", next:{sectionId:"REDIRECT_TO_INDEX"}}]}); // Muestra mensaje error/fin
+                      }
+                 }
+                 else if (data.combatState) { // 4. Comprobar Continuación Combate
+                      console.log("Combate continúa. Actualizando UI.");
+                      const combatSectionId = `combat:${data.combatState.combat_instance_id || combatId}`;
+                      localStorage.setItem('aethelgard_current_section', combatSectionId);
+                      currentSectionId = combatSectionId; // Actualizar ID sección activa
+                      displayCombat(data.combatState); // Refresca UI Combate
+                  }
+                 else if (data.nextSectionData) { // 5. Comprobar Sección Narrativa Normal
+                      console.log("Recibida Sección Narrativa Normal:", data.nextSectionData.id);
+                      localStorage.setItem('aethelgard_current_section', data.nextSectionData.id);
+                      displaySection(data.nextSectionData); // Muestra la sección narrativa
+                  }
+                 else { // 6. Si no es ninguno de los anteriores
+                      console.error("Respuesta inesperada del servidor:", data);
+                      // Lanza un error para que lo capture el .catch()
+                       throw new Error("Respuesta del servidor inesperada o incompleta.");
+                   }
+                 // --- === FIN PROCESAR RESPUESTA === ---
+
+            })
+            .catch(error => {
+                console.error("Error en Fetch/Procesamiento:", error);
+                // Mostrar error en la UI principal si no estamos en combate
+                 if (!currentCombatState) { // Si el error ocurre fuera de combate
+                      gameContentDiv.innerHTML = `<section class="content-section text-danger"><p><strong>Error:</strong> ${error.message}</p><button onclick="location.reload()">Recargar</button></section>`;
+                      gameContentDiv.style.display = 'block';
+                  } else { // Si el error ocurre durante combate (en la respuesta de combat/action)
+                     // Muestra el error en el log del combate sin recargar todo
+                      if(combatLogDiv) combatLogDiv.innerHTML += `<p class="text-danger fw-bold mt-3">Error Procesando Acción: ${error.message}</p>`;
+                      // Habilita botones para reintentar? O pide recargar?
+                       if(playerActionsDiv) playerActionsDiv.style.display = 'block'; // Re-habilita acciones (cuidado con estados inconsistentes)
+                  }
+                  // Ocultar spinner por si acaso
+                   hideLoading();
+            })
+            .finally(() => {
+                 // Esto se ejecuta siempre, haya éxito o error (después de .then o .catch)
+                  hideLoading(); // Asegurarse que el spinner se oculta
+                 console.log(`Llamada fetch a ${apiPath} finalizada.`);
+             });
+        } // --- Fin de fetchSectionData ---
+            // --- FIN CADENA PROMESAS FETCH ---
+ // --- Fin de sendConfirmedCombatAction ---
+         // --- Reset Game ---
+         // Esta función borra el progreso guardado y redirige a la página de inicio.
+         function resetGame() {
+             console.log("Reiniciando Aventura...");
+             try {
+                 // Limpiar datos guardados específicos de Aethelgard en localStorage
+                 localStorage.removeItem('aethelgard_selected_campaign');
+                 localStorage.removeItem('aethelgard_player_count');
+                 localStorage.removeItem('aethelgard_current_section');
+                 localStorage.removeItem('aethelgard_character_state');
+                 // Puedes añadir más claves aquí si guardas otras cosas
+
+                 console.log("Progreso local borrado.");
+
+                 // Redirigir a la página de inicio (index.html)
+                 window.location.href = 'index.html';
+
+             } catch (error) {
+                 // Mostrar error si no se pudo borrar localStorage o redirigir
+                 console.error("Error al intentar reiniciar el juego:", error);
+                 alert("Hubo un problema al reiniciar. Es posible que necesites borrar manualmente los datos del sitio en tu navegador.");
+                 // Aún intentar redirigir
+                 window.location.href = 'index.html';
+             }
+         }
+
+         // Añadir Listener al Enlace/Botón de Reinicio
+         // Asegurarse que resetGameLink existe antes de añadir listener (está en game_play.html, no index.html)
+         if(resetGameLink){
+            resetGameLink.addEventListener('click', (e) => {
+                 e.preventDefault(); // Prevenir que el enlace '#' navegue
+                 // Confirmación del usuario antes de borrar todo
+                 if (confirm("¿Estás seguro de que quieres reiniciar toda la aventura? Perderás todo tu progreso guardado.")) {
+                     resetGame();
+                 }
+             });
+         } else {
+              console.warn("Elemento con ID 'reset-game-link' no encontrado. El botón/enlace de reinicio no funcionará.");
+          }
+
+        // --- FIN DE SECCIÓN RESET GAME ---
+
+
+        // --- ============================================ ---
+        // --- INICIO AL CARGAR PÁGINA game_play.html ---
+        // --- ============================================ ---
+        window.addEventListener('load', () => {
+            console.log("game_play.html cargado. Iniciando...");
+
+            // Lee campaña y número jugadores desde localStorage o URL
+            campaignId = localStorage.getItem('aethelgard_selected_campaign') || new URLSearchParams(window.location.search).get('campaign');
+            playerCount = parseInt(localStorage.getItem('aethelgard_player_count') || new URLSearchParams(window.location.search).get('players') || '2', 10);
+
+            // +++ === LA LÍNEA QUE FALTABA ESTÁ AQUÍ === +++
+            // Lee la sección inicial O la última guardada
+            let initialSectionOrCombatId = localStorage.getItem('aethelgard_current_section') || '1';
+            // +++ === FIN DE LA CORRECCIÓN INICIAL === +++
+
+            console.log(`Datos iniciales: Campaña=${campaignId}, Jugadores=${playerCount}, Inicio/Guardado=${initialSectionOrCombatId}`);
+
+            // Validar si tenemos campaña
+            if (!campaignId) {
+                gameContentDiv.innerHTML = '<p class="text-danger text-center p-5">Error: Campaña no especificada. <a href="select_campaign.html">Selecciona una aventura</a>.</p>';
+                 console.error("No se encontró campaignId.");
+                return; // Detener ejecución
+            }
+
+            // Cargar/Crear Personaje
+            const savedCharState = localStorage.getItem('aethelgard_character_state');
+            if (savedCharState) {
+                 try {
+                     characterStats = JSON.parse(savedCharState);
+                     console.log("Estado personaje cargado desde localStorage", characterStats);
+                      // Podríamos necesitar re-adjuntar gameState aquí si no se guarda junto
+                      // let savedGameState = localStorage.getItem('aethelgard_game_state'); // Si guardaras gameState separado
+                      // characterStats.gameState = savedGameState ? JSON.parse(savedGameState) : {};
+                 } catch (e) {
+                     console.error("Error parseando estado personaje guardado, creando uno nuevo.", e);
+                      // Crear PJ inicial si el guardado falla
+                      characterStats = { FUE: 14, DES: 12, CON: 15, INT: 10, SAB: 13, CAR: 8, XP: 0, PV_max_calc: 24, PV_actual_calc: 24, Level: 1, Inventory: ["Espada Corta","Armadura Cuero"], Name: "Viajero Errante", Class:"Guerrero" }; // Ejemplo
+                      initialSectionOrCombatId = '1'; // Forzar inicio desde S1 si estado está corrupto
+                      localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats)); // Guarda el nuevo estado
+                       localStorage.setItem('aethelgard_current_section', initialSectionOrCombatId);
+                 }
+             } else {
+                  console.log("No hay estado personaje guardado, creando personaje inicial.");
+                   // Crear PJ inicial si no existe
+                  characterStats = { FUE: 14, DES: 12, CON: 15, INT: 10, SAB: 13, CAR: 8, XP: 0, PV_max_calc: 24, PV_actual_calc: 24, Level: 1, Inventory: ["Espada Corta","Armadura Cuero"], Name: "Viajero Nuevo", Class:"Guerrero" }; // Ejemplo
+                  initialSectionOrCombatId = '1'; // Asegurar inicio desde S1
+                   localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats));
+                   localStorage.setItem('aethelgard_current_section', initialSectionOrCombatId);
+              }
+            updateCharacterUI(); // Mostrar info inicial
+
+            document.title = `Aethelgard: Jugando ${campaignId.replace(/_/g,' ')}`; // Pone nombre campaña en título
+
+            // Decidir si Cargar Sección o Reanudar Combate
+            // ++ Añadimos un check para asegurarnos que la variable existe ++
+            if (initialSectionOrCombatId && initialSectionOrCombatId.startsWith('combat_')) {
+                console.log(`Detectado reanudación de combate ID: ${initialSectionOrCombatId}. Lógica de reanudación PENDIENTE.`);
+                 // TODO: Llamar a una API '/api/combat/state' para obtener el estado guardado
+                 //      y luego llamar a displayCombat(estadoRecibido).
+                 //      Por ahora, forzamos ir a la sección 1 como fallback.
+                 alert("Reanudar combate aún no implementado. Volviendo a Sección 1."); // Feedback al usuario
+                 fetchSectionData('1'); // Fallback Temporal a S1
+            } else {
+                // Si initialSectionOrCombatId es null/undefined o no empieza con 'combat_', carga esa sección (o '1' como fallback)
+                 fetchSectionData(initialSectionOrCombatId || '1');
+            }
+        });// PROCESAR RESPUESTA
+                  if (data.error){ throw new Error(data.error);}
+                  if (data.redirect){window.location.href=data.redirect;}
+
+                  // Actualizar Estado del Personaje SIEMPRE si viene en la respuesta
+                   else if (data.updatedCharacterStats) {
+                       characterStats = data.updatedCharacterStats;
+                        localStorage.setItem('aethelgard_character_state', JSON.stringify(characterStats));
+                        updateCharacterUI();
+                   }
+
+                   // Decidir qué mostrar Y ACTUALIZAR SECCIÓN EN LOCALSTORAGE
+                   if (data.startCombat && data.combatData) { // Inicio Combate
+                       console.log("Recibida señal START COMBAT", data.combatData);
+                       const combatSectionId = `combat:${data.combatData.combat_instance_id}`; // ID Sección Combate
+                        // ====> ACTUALIZAR LOCALSTORAGE <====
+                        localStorage.setItem('aethelgard_current_section', combatSectionId);
+                       currentSectionId = combatSectionId; // Actualizar estado JS también
+                        displayCombat(data.combatData);
+                   }
+                   else if (data.combatEnded) { // Fin Combate
+                        console.log(`Combate Terminado! Victoria: ${data.victory}`, data.nextSectionData);
+                        if (data.nextSectionData && data.nextSectionData.id !== 'error') { // Verifica que la sección post-combate sea válida
+                            // ====> ACTUALIZAR LOCALSTORAGE <====
+                           localStorage.setItem('aethelgard_current_section', data.nextSectionData.id);
+                            displaySection(data.nextSectionData); // Muestra sección post-combate
+                        } else {
+                           // Error post-combate o fin campaña
+                            localStorage.removeItem('aethelgard_current_section'); // Limpiar si no hay destino
+                            displaySection({id:'error', title:'Fin Combate Error/Fin Campaña?', description:'No se recibió sección destino válida.', options:[{text:"Volver a Inicio", next:{sectionId:"REDIRECT_TO_INDEX"}}]});
+                       }
+                       currentCombatState = null;
+                   }
+                   else if (data.combatState) { // Continuación Combate
+                       console.log("Recibido Update de Combate");
+                       const combatSectionId = `combat:${data.combatState.combat_instance_id || combatId}`; // Reconfirmar ID
+                        // ====> ACTUALIZAR LOCALSTORAGE <====
+                        localStorage.setItem('aethelgard_current_section', combatSectionId);
+                        currentSectionId = combatSectionId; // Actualizar estado JS
+                       displayCombat(data.combatState);
+                   }
+                   else if (data.nextSectionData) { // Sección Narrativa Normal
+                       console.log("Recibida Sección Narrativa Normal", data.nextSectionData.id);
+                        // ====> ACTUALIZAR LOCALSTORAGE <====
+                        localStorage.setItem('aethelgard_current_section', data.nextSectionData.id);
+                        displaySection(data.nextSectionData);
+                   }
+                   else { throw new Error("Respuesta servidor inválida."); }
+
+    </script>
+</body>
+</html>

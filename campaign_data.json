@@ -1,0 +1,1504 @@
+{
+  "minas_corruptas": {
+    "1": {
+      "id": 1,
+      "title": "La Súplica de Grimhold",
+      "xp_reward": 0,
+      "description": "La niebla se aferra a Grimhold como un presagio. Casas en ruinas, madera podrida. Un hedor a descomposición flota en el aire frío. Estáis en un cruce embarrado a las afueras. Izquierda: un <strong>Bosque Susurrante</strong> nudoso y oscuro. Derecha: las <strong>Ruinas de un Puesto de Guardia</strong> quemado. Recto: el silencioso <strong>Pueblo Desesperado</strong>. Un anciano demacrado, piel traslúcida sobre huesos afilados, tropieza hacia vosotros. \"Forasteros...\", su voz es un susurro roto, \"¡Por piedad! La Sombra... del castillo... pudre la tierra, enferma el alma... ¡Devora nuestra esperanza!\". Señala con dedo tembloroso la imponente y oscura fortaleza en la colina. \"Ya nadie se atreve... ni mercaderes... ni siquiera los carroñeros del <strong>Mercado Negro</strong> que dicen se oculta cerca. El <strong>Gremio</strong> en la capital... está demasiado lejos para oír nuestros lamentos.\"",
+      "enemies": [],
+      "options": [
+        {
+          "text": "Preguntar por el Bosque: \"¿Qué peligros acechan ahí?\"",
+          "check": { "stat": "CAR", "dc": 12 },
+          "next": {
+            "success": { "sectionId": "2", "xp": 50, "path": "info_full" },
+            "failure": { "sectionId": "2", "xp": 25, "path": "info_panic" }
+          }
+        },
+        {
+          "text": "Preguntar por las Ruinas: \"¿Qué ocurrió en ese puesto?\"",
+          "check": { "stat": "INT", "dc": 13 },
+          "next": {
+            "success": { "sectionId": "3", "xp": 50, "path": "info_details" },
+            "failure": { "sectionId": "3", "xp": 25, "path": "info_vague" }
+          }
+        },
+        {
+          "text": "Preguntar por Ayuda en el Pueblo: \"¿Queda alguien cuerdo o útil?\"",
+          "check": { "stat": "CAR", "dc": 14 },
+          "next": {
+            "success": { "sectionId": "4", "xp": 50, "path": "get_elara_lead" },
+            "failure": { "sectionId": "4", "xp": 25, "path": "no_lead" }
+          }
+        }
+      ]
+    },
+    "2": {
+      "id": 2,
+      "title": "Bosque Susurrante - Emboscada Inminente",
+      "xp_reward": 75,
+      "description": "El sendero izquierdo os sumerge en una penumbra fría. Árboles retorcidos como garras artríticas. El silencio es roto por un susurro persistente que parece jugar con vuestra cordura y el crujido súbito de ramas... seguido de gruñidos bajos y risitas agudas y crueles muy cerca. [%IF path=='info_full' THEN '<strong>Recordáis la advertencia del anciano sobre bestias, goblins y leñadores perdidos.</strong>' ELSEIF path=='info_panic' THEN '<strong>El pánico del anciano resuena en vuestra mente mientras avanzáis.</strong>' ELSEIF path=='info_enemies' THEN '<strong>Gracias a tu instinto, sabes que hay X lobos y Y goblins al acecho.</strong>' ELSE ''%]",
+      "enemies": [
+        
+        { "name": "Lobo Gigante Corrupto", "indicator": "💀", "count": "1d4","stats": {
+    "pv_base": 18, "ca": 12, "velocidad": 12, "xp_value": 100,
+    "caracteristicas": { "fue": 15, "des": 13, "con": 13, "int": 3, "sab": 12, "car": 6 },
+    "salvaciones": { "fue": "+2", "des": "+1", "con": "+1" },
+    "habilidades_competentes": { "percepcion": "+3", "sigilo": "+3" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 13 },
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco Feroz", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "1d6+2", "tipo_dano": "perforante",
+          "efecto_adicional": { "tipo": "salvacion", "descripcion": "Si objetivo impactado, Salva FUE CD 12 o cae Derribado.", "stat_salva": "fue", "cd_salva": 12, "efecto_fallo": "derribado" }
+        }
+    ],
+    "habilidades_especiales": [ { "id":"tactica_manada", "nombre":"Táctica de Manada", "tipo_accion":"Pasiva", "descripcion":"Ventaja en ataque si aliado no incapacitado está a 1.5m del objetivo."} ],
+    "ia_basica": { "prioridad_objetivo": "mas_cercano", "movimiento": "acercarse_cac", "uso_habilidad":"usar_tactica_manada"}
+} },
+        { "name": "Goblin Escuálido", "indicator": "💀", "count": "1d4","stats": {
+    "pv_base": 7, "ca": 13, "velocidad": 9, "xp_value": 50,
+    "caracteristicas": { "fue": 8, "des": 14, "con": 10, "int": 10, "sab": 8, "car": 8 },
+    "salvaciones": { "des": "+2", "con": "+0" },
+    "habilidades_competentes": { "sigilo": "+6" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Goblin", "Común (tosco)"],
+    "ataques": [
+        { "id": "daga_oxidada", "nombre": "Daga Oxidada", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "perforante" },
+        { "id": "honda", "nombre": "Honda", "tipo": "distancia", "bono_ataque": "+4", "alcance": "9m/36m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "contundente"}
+    ],
+    "habilidades_especiales": [ { "id":"escape_agil", "nombre":"Escape Ágil", "tipo_accion":"Adicional", "descripcion":"Puede usar Destrabarse o Esconderse como Acción Adicional.", "frecuencia":"A voluntad"} ],
+    "ia_basica": { "prioridad_objetivo": "atacante_distancia/hechicero", "movimiento": "mantener_distancia/usar_cobertura", "uso_habilidad":"usar_escape_agil_si_amenazado"}
+}}
+      ],
+      "options": [
+        {
+          "text": "Preparar Emboscada (Sigilo Grupo)",
+          "check": { "stat": "DES_GROUP", "dc": 14 },
+          "next": {
+            "success": { "sectionId": "combat", "xp": 50, "combat_setup": "surprise_player", "targetSectionAfterCombat": "5" },
+            "failure": { "sectionId": "combat", "xp": 0, "combat_setup": "normal", "targetSectionAfterCombat": "5" }
+          }
+        },
+        {
+          "text": "Avanzar con Sigilo (Sigilo Grupo)",
+          "check": { "stat": "DES_GROUP", "dc": 16 },
+          "next": {
+            "success": { "sectionId": "5", "xp": 100, "path": "stone_clearing" },
+            "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "surprise_enemy", "targetSectionAfterCombat": "5" }
+          }
+        },
+        {
+          "text": "Intimidar / Alarma Ruidosa (CAR o FUE)",
+          "check": { "stat": "CAR_OR_FUE", "dc": 15 },
+          "next": {
+            "success": { "sectionId": "5", "xp": 75, "path": "stone_clearing" },
+            "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "aggro", "targetSectionAfterCombat": "5" }
+          }
+        },
+        {
+          "text": "Escuchar Naturaleza Corrupta",
+          "class_req": "Cazador/Chamán",
+          "check": { "stat": "SAB_NATURE", "dc": 14 },
+          "next": {
+             "success": { "sectionId": "2", "xp": 75, "path": "info_enemies", "feedback": "Sientes X lobos y Y goblins, su malicia es palpable." },
+             "failure": { "sectionId": "2", "xp": 25, "path": "info_fail", "feedback": "Solo sientes confusión y hostilidad general." }
+          }
+        }
+      ]
+    },
+    "3": {
+        "id": 3,
+        "title": "Ruinas P. Guardia - Cenizas y Pistas",
+        "xp_reward": 75,
+        "description": "Las ruinas se recortan contra el cielo plomizo. Piedras ennegrecidas, madera carbonizada. El olor metálico de sangre vieja persiste. Silencio, salvo el viento. [%IF path=='info_details' THEN '<strong>El recuerdo de la descripción del anciano sobre la masacre y las garras te pone en alerta.</strong>' ELSEIF path=='info_vague' THEN '<strong>El lugar desprende desolación, tal como dijo el anciano.</strong>' ELSE ''%]",
+        "enemies": [],
+        "options": [
+            {
+              "text": "Registrar Meticulosamente (Investigación)",
+              "check": { "stat": "INT", "dc": 15 },
+              "next": {
+                "success": { "sectionId": "6", "xp": 100, "path": "found_passage", "feedback": "Encuentras un escudo, espada corta, plata y ¡un pasaje secreto!" },
+                "failure": { "sectionId": "8", "xp": 25, "penalty": "lose_hp_2", "feedback": "Solo ruinas y muerte. La frustración te agota (-2 PV)." }
+              }
+            },
+            {
+              "text": "Seguir el Rastro (Supervivencia/Percepción)",
+              "check": { "stat": "SAB_SURVIVAL", "dc": 13 },
+              "next": {
+                "success": { "sectionId": "7", "xp": 100, "path": "found_chest", "feedback": "El rastro te lleva a una trampa y un cofre cercano." },
+                "failure": { "sectionId": "8", "xp": 25, "penalty": "lose_ration", "feedback": "El rastro se pierde. Pierdes tiempo y una ración." }
+              }
+            },
+            {
+              "text": "Reconstruir la Batalla (Investigación/Intuición)",
+              "check": { "stat": "INT_OR_SAB", "dc": 17 },
+              "next": {
+                "success": { "sectionId": "8", "xp": 100, "path": "info_north", "feedback": "Deduces: ataque brutal, fuerza sobrehumana, desde/hacia el NORTE." },
+                "failure": { "sectionId": "8", "xp": 25, "penalty": "lose_psy_1", "feedback": "Demasiado caótico. El horror te afecta (-1 daño psíquico)." }
+              }
+            },
+            {
+              "text": "Evaluar Defensa Fallida",
+              "class_req": "Guerrero",
+              "check": { "stat": "INT_TACTICS", "dc": 14 },
+              "next": {
+                 "success": { "sectionId": "3", "xp": 75, "path": "info_tactics", "feedback": "Notas fallo defensa norte. Atacante conocía o era muy fuerte." },
+                 "failure": { "sectionId": "3", "xp": 25, "path": "info_tactics_fail", "feedback": "No ves errores obvios, solo destrucción." }
+              }
+            }
+        ]
+    },
+     "4": {
+        "id": 4,
+        "title": "Pueblo Desesperado - ¿Aliados o Víctimas?",
+        "xp_reward": 75,
+        "description": "Calles silenciosas. Casas atrancadas. Hedor. Miradas furtivas. [%IF path=='get_elara_lead' THEN '<strong>Sigues las indicaciones del anciano hacia la cabaña cerca del pozo seco.</strong>' ELSEIF path=='no_lead' THEN '<strong>Vagas sin rumbo hasta que una puerta se abre con recelo...</strong>' ELSE '<strong>Una puerta se abre con recelo...</strong>'%] Una anciana (Elara) os mira. \"¿Qué queréis?\"",
+        "enemies": [],
+        "options": [
+             {
+               "text": "Persuadir con Amabilidad (Ofrecer Ayuda)",
+               "check": { "stat": "CAR", "dc": 14 },
+               "next": {
+                 "success": { "sectionId": "10", "xp": 50, "path": "got_potion_info", "feedback": "Elara os da info de minas, una poción y pista sobre Gremio." },
+                 "failure": { "sectionId": "8", "xp": 25, "penalty": "disadvantage_social", "feedback": "¡Largo! Desconfía aún más. (Desventaja social en Grimhold)." }
+               }
+             },
+            {
+               "text": "Intimidar con Firmeza (Exigir Info)",
+               "check": { "stat": "CAR", "dc": 16 },
+               "next": {
+                  "success": { "sectionId": "10", "xp": 50, "path": "got_info_force", "feedback": "Temblando, Elara revela la ruta de las minas y os echa." },
+                  "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "village_thugs", "targetSectionAfterCombat": "8", "enemy_data": [{ "name": "Bandido Desesperado", "indicator": "💀", "count": 2, "stats": {
+    "pv_base": 11, "ca": 11, "velocidad": 9, "xp_value": 25,
+    "caracteristicas": { "fue": 12, "des": 10, "con": 11, "int": 9, "sab": 9, "car": 10 },
+    "salvaciones": { "fue": "+1", "con": "+0" },
+    "habilidades_competentes": { "intimidacion": "+2" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "percepcion_pasiva": 9 },
+    "idiomas": ["Común"],
+    "ataques": [
+        { "id": "garrote", "nombre": "Garrote", "tipo": "cac", "bono_ataque": "+3", "alcance": "1.5m", "objetivos": 1, "dano": "1d6+1", "tipo_dano": "contundente" }
+    ],
+    "habilidades_especiales": [],
+    "ia_basica": { "prioridad_objetivo": "mas_cercano", "movimiento": "acercarse_cac"}
+} }] }
+               }
+             },
+             {
+               "text": "Ofrecer Trato (2 Raciones / 10 MO)",
+               "check": { "stat": "CAR", "dc": 15 },
+               "next": {
+                  "success": { "sectionId": "10", "xp": 50, "path": "got_gem_info_market", "feedback": "Acepta. Confirma minas, da gema y pista sobre Mercado Negro cercano (Ruinas) y contraseña ('La Sombra lo ve todo')." },
+                  "failure": { "sectionId": "8", "xp": 25, "penalty": "resource_known", "feedback": "Rechaza el trato. Saben que tenéis recursos." }
+               }
+             },
+             {
+                "text": "Ofrecer Curación / Alivio",
+                "class_req": "Clérigo/Chamán",
+                "check": { "stat": "SAB_MEDICINE", "dc": 12 },
+                "next": {
+                     "success": { "sectionId": "4", "xp": 75, "path": "gained_trust", "feedback": "Alivias su dolor. Ganas su confianza. (Puedes Persuadir o hacer Trato con Ventaja ahora)." },
+                     "failure": { "sectionId": "4", "xp": 25, "path": "aid_refused", "feedback": "Rechaza tu ayuda o es ineficaz." }
+                 }
+             }
+        ]
+     },
+    "5": {
+        "id": 5,
+        "title": "Bosque - Claro de la Piedra Ancestral",
+        "xp_reward": 50,
+        "description": "El claro circular es silencioso o los ecos del combate se apagan. La luz es pálida. En el centro, el menhir grabado con espirales emana un zumbido palpable y frío. Los susurros del bosque parecen arremolinarse aquí.",
+        "enemies": [],
+        "options": [
+            {
+               "text": "Examinar Piedra de Cerca (Arcano/Historia)",
+               "check": { "stat": "INT_ARCANAHIST", "dc": 16 },
+               "next": {
+                  "success": { "sectionId": "5", "xp": 75, "path": "stone_info_known", "feedback": "Runas de pacto natural corruptas. Es una baliza. Marca de 3 garras." },
+                  "failure": { "sectionId": "5", "xp": 25, "path": "stone_info_unknown", "feedback": "Símbolos siniestros. Energía oscura palpable." }
+                }
+            },
+             {
+               "text": "Intentar Purificar (Fe/Magia)",
+               "check": { "stat": "SAB_OR_INT", "dc": 17 },
+               "next": {
+                  "success": { "sectionId": "8", "xp": 150, "path": "forest_calmer", "feedback": "¡La piedra se apaga! Sientes alivio. +5 PV Temp." },
+                  "failure": { "sectionId": "combat", "xp": 50, "penalty": "lose_hp_1d8_necro_stun1", "combat_setup": "stone_retaliation", "targetSectionAfterCombat": "8", "enemy_data": [{ "name": "Lobo Gigante Corrupto", "indicator": "💀", "count": "1d4+1", "stats": {
+    "pv_base": 18, "ca": 12, "velocidad": 12, "xp_value": 100,
+    "caracteristicas": { "fue": 15, "des": 13, "con": 13, "int": 3, "sab": 12, "car": 6 },
+    "salvaciones": { "fue": "+2", "des": "+1", "con": "+1" },
+    "habilidades_competentes": { "percepcion": "+3", "sigilo": "+3" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 13 },
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco Feroz", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "1d6+2", "tipo_dano": "perforante",
+          "efecto_adicional": { "tipo": "salvacion", "descripcion": "Si objetivo impactado, Salva FUE CD 12 o cae Derribado.", "stat_salva": "fue", "cd_salva": 12, "efecto_fallo": "derribado" }
+        }
+    ],
+    "habilidades_especiales": [ { "id":"tactica_manada", "nombre":"Táctica de Manada", "tipo_accion":"Pasiva", "descripcion":"Ventaja en ataque si aliado no incapacitado está a 1.5m del objetivo."} ],
+    "ia_basica": { "prioridad_objetivo": "mas_cercano", "movimiento": "acercarse_cac", "uso_habilidad":"usar_tactica_manada"}
+} }] }
+                }
+            },
+            {
+                "text": "Intentar Destruir (Fuerza Bruta)",
+                "check": { "stat": "FUE", "dc": 19 },
+                "next": {
+                    "success": { "sectionId": "8", "xp": 100, "feedback": "¡La piedra se agrieta! La energía oscura chisporrotea." },
+                    "failure": { "sectionId": "5", "xp": 50, "path": "stone_attacked", "penalty": "lose_hp_1d4_necro_AOE3m", "feedback": "Rebota. Onda negativa hiere a los cercanos." }
+                }
+            },
+            {
+                 "text": "Ignorar Piedra, Salir del Bosque (Supervivencia)",
+                 "check": { "stat": "SAB_SURVIVAL", "dc": 14 },
+                 "next": {
+                      "success": { "sectionId": "8", "xp": 75, "feedback": "Encuentras una salida segura." },
+                      "failure": { "sectionId": "8", "xp": 25, "penalty": "lose_ration", "feedback": "Das vueltas y pierdes tiempo/ración." }
+                 }
+            },
+            {
+                "text": "Analizar Flujo Arcano",
+                "class_req": "Hechicero",
+                "check": { "stat": "INT_ARCANA", "dc": 15 },
+                 "next": {
+                      "success": { "sectionId": "5", "xp": 100, "path": "stone_info_flow", "feedback": "Detectas flujo de energía drenado y canalizado al NORTE (Castillo)." },
+                      "failure": { "sectionId": "5", "xp": 25, "path": "stone_info_flow_fail", "feedback": "Flujos caóticos, indescifrables." }
+                  }
+            }
+        ]
+    },
+    "6": {
+      "id": 6,
+      "title": "Ruinas P. Guardia - El Pasaje Descendente",
+      "xp_reward": 100,
+      "description": "Las losas chirrían al ceder, revelando escalones de piedra tosca que se hunden en la oscuridad opresiva. Un olor fétido a humedad, tierra removida y ¿sangre vieja? asciende. Escuchaste un leve raspar de piedra abajo al abrirlo, pero ahora reina el silencio... casi.",
+      "enemies": [],
+      "options": [
+        {
+          "text": "Descender con Cautela por el Pasaje",
+          "next": {
+            "sectionId": "14", "xp": 50, "feedback": "Empiezas el descenso a lo desconocido..."
+          }
+        },
+        {
+          "text": "Explorar Alrededores del Pasaje Antes (Percepción)",
+          "check": { "stat": "SAB", "dc": 12 },
+          "next": {
+            "success": { "sectionId": "6", "xp": 50, "path": "passage_surroundings_ok", "feedback": "Encuentras un antiguo símbolo de guardia casi borrado. No ves trampas inmediatas. El olor fétido es más fuerte aquí." },
+            "failure": { "sectionId": "6", "xp": 25, "path": "passage_surroundings_fail", "feedback": "Solo ves humedad y rocas sueltas. El descenso parece la única opción." }
+          }
+        },
+        {
+          "text": "Bloquear la Entrada y Marcharse",
+          "next": {
+            "sectionId": "8", "xp": 25, "feedback": "Decides no tentar a la suerte. Vuelves al cruce principal."
+          }
+        },
+        {
+          "text": "Evaluar Estructura del Túnel",
+          "class_req": "Pícaro/Enano",
+          "check": { "stat": "INT_DUNGEONEERING", "dc": 13 },
+          "next": {
+             "success": { "sectionId": "6", "xp": 75, "path": "passage_structure_known", "feedback": "Reconoces construcción antigua, quizás pre-data el puesto. Conecta a sistemas más profundos (¿minas?). Sabes qué tipo de derrumbes esperar." },
+             "failure": { "sectionId": "6", "xp": 25, "path": "passage_structure_fail", "feedback": "Es viejo y parece inestable, poco más puedes decir." }
+           }
+        }
+      ]
+    },
+    "7": {
+        "id": 7,
+        "title": "Ruinas P. Guardia - El Cofre de las Garras",
+        "xp_reward": 100,
+        "description": "En el pequeño bosquecillo, junto a la horrible trampa para osos aún manchada de sangre seca, yace el cofre de madera reforzado con hierro. La marca de <strong>tres garras</strong> parece quemada en la madera, casi como una advertencia. Está firmemente cerrado.",
+        "enemies": [],
+        "options": [
+            {
+              "text": "Forzar Apertura (Fuerza)",
+              "check": { "stat": "FUE", "dc": 14 },
+              "next": {
+                "success": { "sectionId": "8", "xp": 75, "path":"chest_opened_brute", "feedback": "¡Abierto! Encuentras 2 Antorchas, Vendas y 25 MO.", "items_gained": ["torch_x2", "bandages_x2", "gold_25"] },
+                "failure": { "sectionId": "7", "xp": 25, "penalty": "lose_hp_1", "feedback": "Resiste tu fuerza (-1 PV por esfuerzo). Debes intentarlo de otra manera." }
+              }
+            },
+            {
+               "text": "Abrir con Ganzúas (Destreza)",
+               "check": { "stat": "DES_THIEVES_TOOLS", "dc": 15 },
+               "next": {
+                 "success": { "sectionId": "8", "xp": 100, "path": "chest_opened_clean", "feedback": "¡Clic! Desactivas aguja venenosa y abres. Obtienes Antorchas, Vendas, 25 MO y una Daga Orco Dentada.", "items_gained": ["torch_x2", "bandages_x2", "gold_25", "dagger_orc_serrated"] },
+                 "partial": { "dc_met": 15, "sectionId": "8", "xp": 75, "path":"chest_opened_poisoned", "penalty": "poisoned_save_con_12", "feedback": "Abres, pero activas aguja (Salva CON 12 o Envenenado). Obtienes Antorchas, Vendas, 25 MO.", "items_gained": ["torch_x2", "bandages_x2", "gold_25"]},
+                 "failure": { "sectionId": "7", "xp": 25, "feedback": "No puedes abrir la cerradura.", "check_fail_trigger_trap_on_5_below": true, "penalty": "poisoned_save_con_12" }
+               }
+            },
+            {
+               "text": "Examinar Marca/Cofre (Inteligencia)",
+               "check": { "stat": "INT_ARCANA_OR_INV", "dc": 16 },
+               "next": {
+                  "success": { "sectionId": "7", "xp": 75, "path": "chest_mark_identified", "feedback": "La marca irradia leve malicia. Es un símbolo tribal orco asociado con Ghoruk, conocido por su brutalidad." },
+                  "failure": { "sectionId": "7", "xp": 25, "path": "chest_mark_unknown", "feedback": "Solo una marca fea y amenazante." }
+               }
+            },
+            {
+                 "text": "Abandonar el Cofre y Marcharse",
+                 "next": {
+                    "sectionId": "8", "xp": 25, "feedback": "Decides no arriesgarte con el cofre marcado."
+                  }
+             }
+        ]
+    },
+    "8": {
+      "id": 8,
+      "title": "Cruce de Caminos - Punto de Decisión",
+      "xp_reward": 75,
+      "description": "Regresas al lúgubre cruce de caminos fuera de Grimhold, o quizás nunca te fuiste. El aire es pesado. El castillo vigila desde la colina. Las pistas reunidas (o la falta de ellas) te obligan a decidir. El norte, hacia las <strong>minas abandonadas</strong>, parece el camino más mencionado y sospechoso. Pero, ¿estás preparado? [%IF path=='info_north' THEN '<strong>Recuerdas que la lucha en las ruinas apuntaba a esta dirección.</strong>' ELSE ''%]",
+      "enemies": [],
+      "options": [
+        {
+          "text": "Ir Directamente a las Minas (Norte)",
+          "next": {
+            "sectionId": "11", "xp": 50, "feedback": "Decidido, tomas el camino a las minas."
+          }
+        },
+        {
+          "text": "Buscar Mercado Legal en Grimhold (Recursos Básicos)",
+          "check": { "stat": "CAR", "dc": 15 },
+          "next": {
+            "success": { "sectionId": "8", "xp": 50, "path": "market_legal_found", "feedback": "Encuentras un puesto con Raciones/Antorchas caras. (Máx 2 items).", "shop_available": "legal_grimhold_basic" },
+            "failure": { "sectionId": "8", "xp": 25, "path": "market_legal_fail", "feedback": "Nadie vende nada. Solo miedo." }
+          }
+        },
+        {
+          "text": "Buscar Entrada Mercado Negro (Cerca Ruinas?)",
+          "precondition_flag": ["knows_market_location_or_password"],
+          "check": { "stat": "SAB_PERCEPTION_OR_INT_INVESTIGATION", "dc": 16, "dc_bonus_if_flag": {"flag":"knows_market_password", "bonus": -2} },
+          "next": {
+            "success": { "sectionId": "9", "xp": 75, "path": "entered_black_market", "feedback": "Encuentras la entrada/contacto y accedes (¿contraseña o soborno 20MO?)." },
+            "failure": { "sectionId": "8", "xp": 25, "path": "market_black_fail", "feedback": "No encuentras nada o el contacto te rechaza. Pierdes 1 hora." }
+          }
+        },
+        {
+           "text": "Buscar Información del Gremio",
+           "next": {
+             "sectionId": "8", "xp": 0, "path":"gremio_info_far", "feedback": "Recuerdas (o te dicen) que el Gremio está a días de viaje. Imposible contactar ahora."
+            }
+        },
+        {
+          "text": "Tomar un Descanso Corto (1h)",
+           "next": {
+             "sectionId": "8", "xp": 25, "path":"rested_short", "feedback": "Descansas brevemente en un lugar precario, recuperando algo de aliento." , "trigger_short_rest": true
+           }
+        }
+      ]
+    },
+     "9": {
+      "id": 9,
+      "title": "Mercado Negro - Susurros y Acero Frío",
+      "xp_reward": 75,
+      "description": "Una puerta oculta tras un tapiz raído, una contraseña ('La Sombra lo ve todo')... Entras en una bodega húmeda/cueva iluminada por faroles humeantes. Figuras encapuchadas comercian en voz baja. Un <strong>Comerciante Turbio</strong>💀💀 (podría ser PNJ o enemigo) con una cicatriz te mide con la mirada. Un par de <strong>Mercenarios B.M.</strong>💀💀 (ídem) vigilan. \"¿Algo... <i>necesario</i>? El tiempo apremia, y los precios suben con la marea oscura.\"",
+      "enemies": [],
+      "options": [
+        {
+          "text": "Comprar Veneno de Víbora Negra (3 dosis, 60 MO)",
+          "check": { "stat": "CAR", "dc": 10 },
+          "next": {
+             "success": {"sectionId": "9", "xp": 25, "feedback": "Trato hecho.", "lose_gold": 60, "items_gained": ["poison_viper_x3"] },
+             "failure": {"sectionId": "9", "xp": 0, "feedback": "'No me fío de tu cara. Largo.'"}
+            }
+        },
+        {
+          "text": "Comprar Ganzúas de Contrabandista (70 MO)",
+           "check": { "stat": "CAR", "dc": 10 },
+          "next": {
+             "success": {"sectionId": "9", "xp": 25, "feedback": "Para manos hábiles.", "lose_gold": 70, "items_gained": ["thieves_tools_masterwork"] },
+             "failure": {"sectionId": "9", "xp": 0, "feedback": "'No tenemos de eso... ahora.'"}
+           }
+        },
+         {
+           "text": "Comprar Poción Curación Oscura (90 MO)",
+           "check": { "stat": "CAR", "dc": 12 },
+           "next": {
+              "success": {"sectionId": "9", "xp": 25, "feedback": "Bajo tu responsabilidad...", "lose_gold": 90, "items_gained": ["potion_healing_dark"] },
+              "failure": {"sectionId": "9", "xp": 0, "feedback": "'Se agotaron... mala suerte.'"}
+            }
+         },
+         {
+            "text": "Vender Botín (Gema, Daga Orco...)",
+            "next": {
+              "sectionId": "9", "xp": 25, "feedback": "Te ofrecen un precio miserable (50% valor). Regateo posible (CAR Int. vs 15).", "trigger_selling_interface": true
+             }
+         },
+         {
+             "text": "Preguntar por 'Trabajos'",
+             "next": {
+               "sectionId": "9", "xp": 50, "path": "job_offer_hook", "feedback": "'Quizás... hay un encargo. Un grupo rival se llevó algo de las minas... si lo recuperas, habrá recompensa.' (Gancho de Misión Opcional)."
+              }
+         },
+        {
+           "text": "Indagar sobre Esclavos",
+            "next": {
+              "sectionId": "9", "xp": 10, "path":"slave_inquiry", "feedback": "Te miran con desconfianza y frialdad. 'Ese... no es negocio para extraños aquí. A menos que traigas mercancía... o seas comprador MUY serio.'"
+            }
+        },
+        {
+          "text": "Marcharse del Mercado Negro",
+          "next": {
+            "sectionId": "10", "xp": 25, "feedback": "Sales de la atmósfera opresiva del mercado negro."
+           }
+        }
+      ]
+    },
+     "10": {
+        "id": 10,
+        "title": "Preparativos Finales - El Umbral de las Minas",
+        "xp_reward": 50,
+        "description": "Con la información obtenida de Elara (o del Mercado Negro, o de ninguno), la siguiente etapa parece clara: las <strong>minas abandonadas al norte</strong>. Es la ruta más probable hacia el castillo y el corazón de la corrupción, pero también la más peligrosa según todos los indicios. El aire ya parece más frío al pensar en ello. ¿Un último preparativo?",
+        "enemies": [],
+        "options": [
+            {
+              "text": "¡Adelante! Directo a las Minas (Norte)",
+              "next": { "sectionId": "11", "xp": 50 }
+            },
+             {
+                "text": "Revisitar Mercado Legal (Si accesible/quieres gastar más)",
+                 "precondition_flag": ["can_visit_legal_market"],
+                "check": { "stat": "CAR", "dc": 15 },
+                 "next": {
+                    "success": { "sectionId": "8", "xp": 25, "path": "market_legal_found", "feedback": "Vuelves al precario puesto. Stock limitado.", "shop_available": "legal_grimhold_basic" },
+                    "failure": { "sectionId": "10", "xp": 10, "feedback": "El vendedor ya se ha ido o no te atiende." }
+                 }
+             },
+            {
+                "text": "Ritual Protector / Bendición",
+                "class_req": "Clérigo/Paladín/Chamán",
+                 "next": {
+                     "sectionId": "10", "xp": 50, "path":"ritual_done", "feedback": "Realizas ritual. Ganas Bendición (+1 prox Salva) O Presagio.", "trigger_blessing_omen": true
+                  }
+             },
+            {
+              "text": "Descanso Corto (1h)",
+              "next": {
+                 "sectionId": "10", "xp": 25, "path": "rested_short_final", "feedback": "Breve descanso antes de entrar a las profundidades.", "trigger_short_rest": true
+               }
+             }
+        ]
+    },
+    "11": {
+        "id": 11,
+        "title": "Senda a las Minas - Augurios Rocosos",
+        "xp_reward": 50,
+        "description": "El sendero serpentea ascendiendo por colinas peladas. Roca gris y afilada, vegetación escasa y enfermiza bajo un cielo plomizo. Un viento frío silba, trayendo un lejano olor a metal oxidado y... algo más profundo, como tierra removida y húmeda. El silencio solo es roto por vuestros pasos y el graznido ocasional de cuervos carroñeros.",
+        "enemies": [],
+        "options": [
+            {
+                "text": "Seguir Sendero Principal con Cautela (Percepción)",
+                "check": { "stat": "SAB", "dc": 12 },
+                "next": {
+                    "success": { "sectionId": "12", "xp": 50, "feedback": "Llegas a la entrada sin incidentes visibles." },
+                    "failure": { "sectionId": "12", "xp": 25, "feedback": "Llegas a la entrada, pero quizás te perdiste alguna señal..." },
+                     "partial": { "dc_met": 10, "sectionId": "12", "xp": 35, "penalty": "twist_ankle_slow", "feedback": "Pisas mal y te tuerces el tobillo (-1.5m vel hasta desc. corto)." }
+                 }
+            },
+            {
+                 "text": "Buscar Rastros/Señales Recientes (Supervivencia)",
+                 "check": { "stat": "SAB_SURVIVAL", "dc": 13 },
+                 "next": {
+                      "success": { "sectionId": "11", "xp": 50, "path": "tracks_found", "feedback": "Huellas claras: Orco grande, varios Goblins, ¿Lobos?. Van y vienen de la mina. Ves una flecha goblin rota." },
+                      "failure": { "sectionId": "11", "xp": 25, "path": "tracks_failed", "feedback": "Huellas confusas por el terreno." }
+                  }
+             },
+             {
+                  "text": "Moverse Sigilosamente Fuera del Sendero",
+                  "class_req": "Explorador/Pícaro",
+                  "check": { "stat": "DES_STEALTH", "dc": 14 },
+                  "next": {
+                      "success": { "sectionId": "12", "xp": 75, "path": "approach_stealthy", "feedback": "Encuentras puesto vigilancia goblin abandonado. Puedes observar entrada mina (S12) con Ventaja." },
+                       "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "bats_disturbed", "targetSectionAfterCombat": "12", "enemy_data": [{"name":"Murciélago Monstruoso", "indicator":"💀", "count":"1d4", "stats": {
+    "pv_base": 10, "ca": 11, "velocidad": 3, "velocidad_vuelo": 12, "xp_value": 60,
+    "caracteristicas": { "fue": 8, "des": 13, "con": 10, "int": 2, "sab": 11, "car": 5 },
+    "salvaciones": { "des": "+1" },
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_ciega": 18, "percepcion_pasiva": 10, "sentido_agudo": "oido (Ventaja Perc. Oído)" },
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+3", "alcance": "1.5m", "objetivos": 1, "dano": "1d4+1", "tipo_dano": "perforante" }
+    ],
+    "habilidades_especiales": [ { "id":"vuelo_paso_rasante", "nombre":"Vuelo Rasante", "tipo_accion":"Pasiva", "descripcion":"No provoca ataques de oportunidad al salir del alcance de un enemigo si ha volado."} ],
+    "ia_basica": { "prioridad_objetivo": "aislado/sorprendido", "movimiento": "atacar_volando_y_retirarse" }
+}}], "feedback": "Haces ruido y molestas a unos murciélagos monstruosos." }
+                   }
+              }
+        ]
+    },
+
+    "12": {
+        "id": 12,
+        "title": "La Boca de la Mina - Guardiana Espiral",
+        "xp_reward": 75,
+        "description": "Llegas a una meseta rocosa. Ante ti, la <strong>Boca de la Mina Abandonada</strong>, un agujero oscuro y amenazante en la ladera. Vigas podridas, vagonetas volcadas, herramientas rotas. Aire frío y fétido emana (polvo, humedad, descomposición). En una roca grande, pintada con sangre seca: una <strong>Marca Espiral Dentada</strong> pulsa débilmente con luz malsana. El lugar está demasiado silencioso... [%IF path=='approach_stealthy' THEN '<strong>Desde tu posición oculta, tienes una buena vista general.</strong>' ELSE ''%]",
+        "enemies": [],
+        "options": [
+            {
+              "text": "Entrar Directamente a la Mina",
+              "next": { "sectionId": "13", "xp": 50, "feedback": "Te adentras en la oscuridad..." } 
+            },
+            {
+               "text": "Examinar Entrada y Alrededores (Percepción)",
+               "check": { "stat": "SAB", "dc": 13 },
+               "next": {
+                    "success": { "sectionId": "12", "xp": 50, "path": "entrance_details_found", "feedback": "Confirmas huellas. Marcas arrastre. Ligero ZUMBIDO inhumano desde dentro. Saeta ballesta rota (¿otro aventurero?)." },
+                    "failure": { "sectionId": "12", "xp": 25, "path": "entrance_details_failed", "feedback": "Solo ves lo obvio: entrada, marca, desorden." }
+                }
+            },
+            {
+                 "text": "Vigilar Entrada Oculto (30 min) (Sigilo)",
+                 "check": { "stat": "DES_STEALTH", "dc": 12, "advantage_if_flag":"approach_stealthy"}, 
+                "next": {
+                     "success": { "sectionId": "12", "xp": 75, "path": "entrance_observed", "feedback": "(Resultado observación: 1d6: 1-2=Nada; 3-4=1d4 Goblins salen/entran; 5=1 Lobo G C entra/sale; 6=Figura encapuchada sale/entra rápido).", "roll_dependent_outcome": "d6" },
+                     "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "entrance_ambush_goblins", "targetSectionAfterCombat": "12", "enemy_data": [{"name":"Goblin Escuálido","indicator":"💀","count":"1d4", "stats": {
+    "pv_base": 7, "ca": 13, "velocidad": 9, "xp_value": 50,
+    "caracteristicas": { "fue": 8, "des": 14, "con": 10, "int": 10, "sab": 8, "car": 8 },
+    "salvaciones": { "des": "+2", "con": "+0" },
+    "habilidades_competentes": { "sigilo": "+6" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Goblin", "Común (tosco)"],
+    "ataques": [
+        { "id": "daga_oxidada", "nombre": "Daga Oxidada", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "perforante" },
+        { "id": "honda", "nombre": "Honda", "tipo": "distancia", "bono_ataque": "+4", "alcance": "9m/36m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "contundente"}
+    ],
+    "habilidades_especiales": [ { "id":"escape_agil", "nombre":"Escape Ágil", "tipo_accion":"Adicional", "descripcion":"Puede usar Destrabarse o Esconderse como Acción Adicional.", "frecuencia":"A voluntad"} ],
+    "ia_basica": { "prioridad_objetivo": "atacante_distancia/hechicero", "movimiento": "mantener_distancia/usar_cobertura", "uso_habilidad":"usar_escape_agil_si_amenazado"}
+}}], "feedback":"¡Te ven los goblins que salían!" } 
+                 }
+            },
+            {
+                 "text": "Detectar Magia (en Marca/Entrada)",
+                 "class_req": "Hechicero/Mago/Clérigo",
+                  "next": {
+                     "sectionId": "12", "xp": 75, "path": "magic_detected_mark", "feedback": "La Marca Espiral irradia débil Nigromancia y Transmutación corrupta. Parece una alarma psíquica menor."
+                  }
+            }
+        ]
+    },
+
+     "13": {
+        "id": 13,
+        "title": "Primer Túnel - Bienvenida Escurridiza",
+        "xp_reward": 50,
+        "description": "La oscuridad te traga al cruzar el umbral. Tu luz revela un túnel tosco, húmedo, con raíles oxidados. Eco. Olor acre a polvo y guano. ¡Chillidos y aleteos furiosos desde las sombras del techo y grietas!",
+        "enemies": [
+             { "name": "Rata Gigante", "indicator": "💀", "count": "1d6+2", "stats": {
+    "pv_base": 5, "ca": 10, "velocidad": 9, "xp_value": 25,
+    "caracteristicas": { "fue": 7, "des": 11, "con": 9, "int": 2, "sab": 10, "car": 4 },
+    "salvaciones": { "des": "+0" },
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 10, "sentido_agudo": "olfato (Ventaja Perc. Olfato)"},
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "1d4", "tipo_dano": "perforante" }
+    ],
+    "habilidades_especiales": [ { "id":"tactica_manada_rata", "nombre":"Táctica de Manada", "tipo_accion":"Pasiva", "descripcion":"Ventaja en ataque si aliado no incapacitado está a 1.5m del objetivo."}],
+    "ia_basica": { "prioridad_objetivo": "herido/mas_cercano", "movimiento": "acercarse_en_grupo"}
+} },
+             { "name": "Murciélago Monstruoso", "indicator": "💀", "count": "1d4", "stats": {
+    "pv_base": 10, "ca": 11, "velocidad": 3, "velocidad_vuelo": 12, "xp_value": 60,
+    "caracteristicas": { "fue": 8, "des": 13, "con": 10, "int": 2, "sab": 11, "car": 5 },
+    "salvaciones": { "des": "+1" },
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_ciega": 18, "percepcion_pasiva": 10, "sentido_agudo": "oido (Ventaja Perc. Oído)" },
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+3", "alcance": "1.5m", "objetivos": 1, "dano": "1d4+1", "tipo_dano": "perforante" }
+    ],
+    "habilidades_especiales": [ { "id":"vuelo_paso_rasante", "nombre":"Vuelo Rasante", "tipo_accion":"Pasiva", "descripcion":"No provoca ataques de oportunidad al salir del alcance de un enemigo si ha volado."} ],
+    "ia_basica": { "prioridad_objetivo": "aislado/sorprendido", "movimiento": "atacar_volando_y_retirarse" }
+} }
+        ],
+        "options": [
+            {
+                 "text": "Combatir las Alimañas",
+                 "next": { "sectionId": "combat", "xp": 0, "combat_setup": "vermin_swarm", "targetSectionAfterCombat": "16", "enemy_pool_ids": ["rat_giant", "bat_monstrous"] } 
+             },
+            {
+                 "text": "Ahuyentar (Fuego Intenso/Ruido Fuerte)",
+                 "check": { "stat": "CAR", "dc": 13 },
+                 "next": {
+                      "success": { "sectionId": "16", "xp": 50, "feedback": "El fuego/ruido las desorienta y retroceden a sus agujeros." },
+                      "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "vermin_swarm_aggro", "targetSectionAfterCombat": "16", "enemy_pool_ids": ["rat_giant", "bat_monstrous"]}
+                 }
+            },
+            {
+                "text": "Formación Defensiva (con Escudo)",
+                "class_req": "Guerrero",
+                 "next": {
+                      "sectionId": "13", "xp": 25, "path": "defensive_stance", "feedback": "Te cubres, aguantando la primera oleada para evaluar." , "apply_effect": "+1 CA vs Alimañas 1 turno"
+                   }
+             }
+        ]
+    },
+     "14": {
+        "id": 14,
+        "title": "Ruta Subterránea - Túnel Húmedo Inicial",
+        "xp_reward": 50,
+        "description": "El túnel secreto es bajo, húmedo y opresivo. Vigas podridas apuntalan la tierra y roca. Claramente, una ruta antigua y olvidada que va hacia el Norte. Tras unos 20 metros, bifurcación: el túnel sigue <strong>Recto (Norte)</strong>, con aire frío; otro gira a la <strong>Derecha (Este)</strong>, de donde viene un olor fuerte a podredumbre y moho.",
+        "enemies": [],
+        "options": [
+            {
+               "text": "Seguir Recto (Norte)",
+               "next": { "sectionId": "24", "xp": 50, "feedback": "Sigues al norte. Huesos roídos y un gruñido húmedo adelante..." }
+             },
+            {
+               "text": "Tomar Derecha (Este - Olor Fuerte)",
+               "next": { "sectionId": "15", "xp": 75, "feedback": "Te adentras en el túnel apestoso y mohoso." }
+            },
+            {
+               "text": "Examinar Bifurcación Detalladamente (Percepción/Inv.)",
+               "check": { "stat": "SAB_OR_INT", "dc": 14 },
+               "next": {
+                   "success": { "sectionId": "14", "xp": 50, "path": "junction_scouted_ok", "feedback": "Ruta N más transitada (¿criaturas?). Ruta E: casi sin huellas, rastro viscoso oscuro, moho extraño. Rasguños en pared E." },
+                   "failure": { "sectionId": "14", "xp": 25, "path": "junction_scouted_fail", "feedback": "Solo oscuridad y olor. N parece más transitado, E huele a muerte." }
+                }
+            }
+        ]
+    },
+     "15": {
+        "id": 15,
+        "title": "Túnel Este - El Moho Asfixiante",
+        "xp_reward": 75,
+        "description": "El túnel apesta. El aire es pesado, difícil respirar. Paredes y suelo están cubiertos por un <strong>Moho Negro Pulsátil</strong>💀 que libera esporas visibles. Cada respiración quema. El túnel termina en derrumbe adelante, pero entre el moho ves algo brillar.",
+        "hazard": { "type": "spores", "save_dc": 10, "save_stat": "CON", "effect": "gain_suffocation_level_1", "notes": "Salva cada turno en la zona."},
+        "enemies": [],
+        "options": [
+            {
+               "text": "Acercarse al Brillo (Conteniendo aliento - Acrobacia)",
+               "check": { "stat": "DES", "dc": 12 },
+               "next": {
+                  "success": { "sectionId": "14", "xp": 50, "path":"mold_object_retrieved", "feedback": "¡Lo tienes! Un Símbolo Sagrado de Plata. Sales tosiendo.", "items_gained":["holy_symbol_silver"], "return_to_previous":true },
+                  "failure": { "sectionId": "14", "xp": 25, "path":"mold_slip_failed", "feedback": "Resbalas/Tocas moho. Nube densa (Salva CON Desv). Sales con dificultad.", "hazard_trigger_enhanced":true, "return_to_previous":true }
+                }
+            },
+            {
+               "text": "Quemar Moho para Pasar (Antorcha/Aceite)",
+               "next": {
+                 "sectionId": "15", "xp": 25, "path":"mold_burned", "feedback": "Moho sisea y se retrae donde quemas, pero libera MÁS esporas (Salva CON CD 12). ¿Intentas coger el brillo ahora?", "hazard_trigger_now_cd12":true
+               }
+            },
+            {
+              "text": "¡Retirarse! Demasiado Peligroso",
+              "next": { "sectionId": "14", "xp": 25, "feedback": "Sabia decisión. Vuelves a la bifurcación.", "return_to_previous":true }
+            }
+        ]
+     },
+     "16": {
+        "id": 16,
+        "title": "Túnel Minero Principal - Danza Macabra",
+        "xp_reward": 50,
+        "description": "Más allá de las alimañas. Raíles oxidados. Olor a polvo de huesos y carne rancia. ¡CRUJIDO! De nichos oscuros y recovecos, se alzan figuras con harapos de minero y herramientas oxidadas... ¡muertos vivientes!",
+        "enemies": [
+            { "name": "Esqueleto Minero", "indicator": "💀", "count": "1d4+1","stats": {
+    "pv_base": 13, "ca": 12, "velocidad": 9, "xp_value": 75,
+    "caracteristicas": { "fue": 10, "des": 12, "con": 13, "int": 6, "sab": 8, "car": 5 },
+    "salvaciones": {},
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": ["veneno", "agotamiento"], "vulnerabilidades_dano": ["contundente"], "inmunidades_condicion": ["envenenado", "asustado", "dormido", "paralizado", "petrificado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Entiende idiomas que conocía en vida pero no habla"],
+    "ataques": [
+        { "id": "pico_oxidado", "nombre": "Pico Oxidado", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "1d6", "tipo_dano": "perforante" },
+         { "id": "pala_rota", "nombre": "Pala Rota", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "1d4", "tipo_dano": "contundente"}
+    ],
+    "habilidades_especiales": [],
+    "ia_basica": { "prioridad_objetivo": "vivo_mas_cercano", "movimiento": "directo_hacia_objetivo"}
+} },
+            { "name": "Zombi Minero Pestilente", "indicator": "💀", "count": "1d4", "stats": {
+    "pv_base": 20, "ca": 8, "velocidad": 6, "xp_value": 80,
+    "caracteristicas": { "fue": 13, "des": 6, "con": 14, "int": 3, "sab": 6, "car": 5 },
+    "salvaciones": { "sab": "-2" },
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": ["veneno"], "vulnerabilidades_dano": [], "inmunidades_condicion": ["envenenado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 8 },
+    "idiomas": ["Entiende idiomas que conocía en vida pero no habla"],
+    "ataques": [
+        { "id": "golpe_putrido", "nombre": "Golpe Pútrido", "tipo": "cac", "bono_ataque": "+3", "alcance": "1.5m", "objetivos": 1, "dano": "1d6+1", "tipo_dano": "contundente",
+           "efecto_adicional": { "tipo":"salvacion", "descripcion": "Salva CON CD 10 o queda Envenenado 1 minuto por el hedor.", "stat_salva":"con", "cd_salva":10, "efecto_fallo":"envenenado_1m"}}
+    ],
+    "habilidades_especiales": [ {"id":"fortaleza_no_muerta", "nombre":"Fortaleza No Muerta", "tipo_accion":"Pasiva", "descripcion":"Si daño lo reduce a 0 PV, debe hacer Salva CON CD 5+daño recibido. Si éxito, queda a 1 PV en lugar (no funciona si daño es radiante o crítico)."} ],
+    "ia_basica": { "prioridad_objetivo": "vivo_mas_cercano", "movimiento": "lento_implacable"}
+} }
+        ],
+        "options": [
+             {
+                 "text": "Combatir a los No-Muertos",
+                 "next": { "sectionId": "combat", "xp": 0, "combat_setup": "undead_miners", "targetSectionAfterCombat": "17", "enemy_pool_ids": ["skeleton_miner", "zombie_miner"] }
+             },
+             {
+                  "text": "Expulsar/Repeler No-Muertos (Fe)",
+                  "class_req": "Clérigo/Paladín",
+                  "check": { "stat": "SAB_OR_CAR_CHANNEL", "dc": 13 },
+                  "next": {
+                      "success": { "sectionId": "17", "xp": 100, "feedback": "Tu fe los hace retroceder. ¡Pasas entre ellos!" },
+                      "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "undead_miners_resist", "targetSectionAfterCombat": "17", "enemy_pool_ids": ["skeleton_miner", "zombie_miner"] }
+                 }
+             },
+             {
+                  "text": "Atravesar Corriendo/Esquivando (Acrobacia)",
+                  "check": { "stat": "DES", "dc": 14 },
+                  "next": {
+                      "success": { "sectionId": "17", "xp": 75, "feedback": "¡Increíble! Te deslizas entre sus garras huesudas." },
+                       "failure": { "sectionId": "combat", "xp": 25, "combat_setup": "undead_miners_grabbed", "targetSectionAfterCombat": "17", "enemy_pool_ids": ["skeleton_miner", "zombie_miner"]}
+                  }
+             },
+             {
+                   "text": "Distracción Ilusoria (Magia/Engaño)",
+                   "class_req": "Bardo/Hechicero",
+                   "check": { "stat": "CAR_OR_INT_ILLUSION", "dc": 14 },
+                    "next": {
+                      "success": { "sectionId": "17", "xp": 100, "feedback": "Una luz/ruido ilusorio captura su atención vacía. Pasas sigilosamente." },
+                       "failure": { "sectionId": "16", "xp": 25, "path": "illusion_failed", "feedback": "La ilusión falla. Elige otra opción." }
+                   }
+             }
+        ]
+    },
+     "17": {
+        "id": 17,
+        "title": "Túnel Principal - Cruce de Vías",
+        "xp_reward": 75,
+        "description": "Los no-muertos quedan atrás (destruidos o evitados). El túnel principal sigue <strong>Recto</strong> (más profundo, hacia el eco de martillo), pero aquí hay un cruce con actividad evidente: A la <strong>Derecha</strong>, una galería lateral más ancha, de donde provienen risitas goblin y golpes metálicos. A la <strong>Izquierda</strong>, un túnel estrecho, polvoriento y parcialmente derrumbado.",
+        "enemies": [],
+        "options": [
+             { "text": "Seguir Túnel Principal (Recto)", "next": { "sectionId": "20", "xp": 50 } },
+             { "text": "Explorar Galería Lateral (Derecha - Goblins)", "next": { "sectionId": "18", "xp": 75 } },
+             { "text": "Investigar Túnel Estrecho (Izquierda - Inestable)", "check": { "stat": "INT_OR_DES", "dc": 13 }, "next": { "success": { "sectionId": "17", "xp": 50, "path": "narrow_tunnel_scouted", "feedback": "Parece inestable pero ves pico y nota goblin. Puedes [A] Intentar Entrar con riesgo, o [B] Volver a opciones cruce.", "unlocks_option_A": true }, "failure": { "sectionId": "17", "xp": 25, "path": "narrow_tunnel_failed", "feedback": "Demasiado peligroso/No ves nada de interés." } } },
+             { "text": "[A] Entrar al Túnel Estrecho Inestable", "precondition_flag":["narrow_tunnel_scouted"], "next": {"sectionId": "19", "xp": 75, "feedback":"Te adentras con sumo cuidado..."}}
+        ]
+    },
+     "18": {
+        "id": 18,
+        "title": "Galería Lateral - Territorio Goblin",
+        "xp_reward": 100,
+        "description": "Entras. Galería amplia usada como campamento/taller goblin. Fuego apagado, herramientas rotas, olor fétido. Varios pieles verdes te ven y chillan alarmados. Uno más grande y feo, con armadura improvisada y látigo, os señala. ¡Debe ser <strong>Snag</strong>!",
+        "enemies": [
+             { "name": "Capataz Goblin 'Snag'", "indicator": "💀💀", "count": 1, "stats": {
+    "pv_base": 25,
+    "ca": 14,
+    "velocidad": 9,
+    "xp_value": 200,
+    "caracteristicas": { "fue": 10, "des": 14, "con": 12, "int": 11, "sab": 9, "car": 9 },
+    "salvaciones": { "des": "+4", "con": "+1" },
+    "habilidades_competentes": { "sigilo": "+6", "intimidacion": "+1", "percepcion": "+1" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 11 },
+    "idiomas": ["Goblin", "Común (tosco y vulgar)"],
+    "ataques": [
+        {
+            "id": "latigo_improvisado",
+            "nombre": "Latigazo Cruel",
+            "tipo": "cac",
+            "bono_ataque": "+4",
+            "alcance": "3m",
+            "objetivos": 1,
+            "dano": "1d4+2",
+            "tipo_dano": "cortante"
+        },
+        {
+            "id": "cimitarra_mellada",
+            "nombre": "Cimitarra Mellada",
+            "tipo": "cac",
+            "bono_ataque": "+4",
+            "alcance": "1.5m",
+            "objetivos": 1,
+            "dano": "1d6+2",
+            "tipo_dano": "cortante"
+        }
+    ],
+    "habilidades_especiales": [
+        {
+            "id": "redireccionar_ataque",
+            "nombre": "¡A él, Inútiles!",
+            "tipo_accion": "Reaccion",
+            "desencadenante": "Cuando Snag es objetivo de un ataque CaC y tiene un aliado Goblin a 1.5m.",
+            "descripcion": "Snag puede obligar al atacante a hacer la tirada de ataque contra el aliado Goblin en su lugar.",
+            "frecuencia": "A voluntad"
+        },
+        {
+             "id":"escape_agil",
+             "nombre":"Escape Ágil",
+             "tipo_accion":"Adicional",
+             "descripcion":"Puede usar Destrabarse o Esconderse como Acción Adicional.",
+             "frecuencia":"A voluntad"
+        }
+    ],
+    "ia_basica": { "prioridad_objetivo": "el_mas_amenazante/lider_percibido", "movimiento": "mantenerse_detras_esbirros", "uso_habilidad":"usar_redireccionar_siempre_que_pueda"}
+} },
+             { "name": "Goblin Escuálido", "indicator": "💀", "count": "1d6+1", "stats": {
+    "pv_base": 7, "ca": 13, "velocidad": 9, "xp_value": 50,
+    "caracteristicas": { "fue": 8, "des": 14, "con": 10, "int": 10, "sab": 8, "car": 8 },
+    "salvaciones": { "des": "+2", "con": "+0" },
+    "habilidades_competentes": { "sigilo": "+6" },
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Goblin", "Común (tosco)"],
+    "ataques": [
+        { "id": "daga_oxidada", "nombre": "Daga Oxidada", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "perforante" },
+        { "id": "honda", "nombre": "Honda", "tipo": "distancia", "bono_ataque": "+4", "alcance": "9m/36m", "objetivos": 1, "dano": "1d4+2", "tipo_dano": "contundente"}
+    ],
+    "habilidades_especiales": [ { "id":"escape_agil", "nombre":"Escape Ágil", "tipo_accion":"Adicional", "descripcion":"Puede usar Destrabarse o Esconderse como Acción Adicional.", "frecuencia":"A voluntad"} ],
+    "ia_basica": { "prioridad_objetivo": "atacante_distancia/hechicero", "movimiento": "mantener_distancia/usar_cobertura", "uso_habilidad":"usar_escape_agil_si_amenazado"}
+} }
+         ],
+         "options": [
+             { "text": "¡Combate Directo!", "next": { "sectionId": "combat", "xp": 0, "combat_setup": "goblin_nest", "targetSectionAfterCombat": "21", "enemy_pool_ids": ["snag_goblin", "goblin_squalid"] } },
+             { "text": "Intentar Sobornar/Negociar (Engaño/Int.)", "check": { "stat": "CAR", "dc": 16 }, "next": { "success": { "sectionId": "21", "xp": 100, "feedback": "Snag acepta tus 80MO para 'mirar a otro lado'. ¿Confiable?", "lose_gold": 80, "path": "snag_bribed" }, "failure": { "sectionId": "combat", "xp": 50, "combat_setup": "goblin_nest_failed_talk", "targetSectionAfterCombat": "21", "enemy_pool_ids": ["snag_goblin", "goblin_squalid"]} } },
+             { "text": "Usurpar Autoridad de Snag (Intimidación)", "class_req":"Pícaro/Bárbaro", "check": { "stat": "CAR", "dc": 17 }, "next": { "success": { "sectionId": "combat", "xp": 150, "combat_setup": "goblin_nest_challenged", "targetSectionAfterCombat": "21", "enemy_pool_ids": ["snag_goblin", "goblin_squalid"], "feedback": "Tu desafío hace dudar a los otros. Ventaja 1er turno vs Snag."}, "failure": { "sectionId": "combat", "xp": 50, "combat_setup": "goblin_nest_challenge_fail", "targetSectionAfterCombat": "21", "enemy_pool_ids": ["snag_goblin", "goblin_squalid"]} } }
+         ]
+    },
+     "19": {
+        "id": 19,
+        "title": "Túnel Estrecho - Hallazgos Peligrosos",
+        "xp_reward": 75,
+        "description": "Avanzas con cuidado por el túnel inestable. Termina en un derrumbe reciente. Encuentras el <strong>Pico Minero</strong> en buen estado y la <strong>nota goblin</strong>: \"Jefe Orco loco por piedras brillantes... dice oye 'Voz'... ¡salir antes BOOM!\".",
+        "enemies": [],
+        "items_gained": ["pickaxe"],
+        "options": [
+            { "text": "Volver al Cruce (S17) con Pico y Nota", "next": { "sectionId": "17", "xp": 25, "path": "returned_from_narrow_tunnel", "feedback":"Obtienes info crucial y un pico." } },
+            { "text": "Usar Pico para Cavar en Derrumbe (Fuerza)", "check": { "stat": "FUE", "dc": 16 }, "next": { "success": { "sectionId": "19", "xp": 100, "path": "narrow_tunnel_cleared", "feedback":"Abres hueco! Cámara con plata y ¡cadáver Enano! Obtienes equipo y diario.", "items_gained":["studded_leather","war_axe_dwarf","gold_30","wet_journal"]}, "failure": { "sectionId": "17", "xp": 50, "path":"narrow_tunnel_collapse", "feedback":"¡Provocas más derrumbe! Túnel bloqueado. Vuelves al cruce.", "penalty":"lose_hp_1d4" }, "critical_failure": { "sectionId": "17", "xp":25, "path":"narrow_tunnel_major_collapse", "feedback":"¡GRAN DERRUMBE! Sales herido, túnel intransitable.", "penalty":"lose_hp_1d8"}} }
+        ]
+     },
+     "20": {
+        "id": 20,
+        "title": "Túnel Principal - Barricada Improvisada",
+        "xp_reward": 25,
+        "description": "Sigues los raíles oxidados más adentro. Aire frío, olor a ozono y corrupción. El eco de martillo es rítmico y cercano. Una <strong>Vagoneta Minera volcada</strong>💀 bloquea parcialmente el paso, parece colocada deliberadamente.",
+        "enemies": [],
+        "options": [
+            { "text": "Apartar Vagoneta (Fuerza - Colaborativa?)", "check": { "stat": "FUE", "dc": 13, "dc_bonus_if_condition":{"condition":"helpers_2_plus", "bonus":-2}}, "next": { "success":{ "sectionId":"22", "xp":100, "feedback":"Despejas. Símbolo orco debajo." }, "failure":{"sectionId":"20", "xp":0, "path":"cart_stuck", "feedback":"No se mueve. Busca otra opción."}} },
+            { "text": "Trepar / Esquivar Vagoneta (Acrobacia)", "check": { "stat": "DES", "dc": 12 }, "next": { "success":{ "sectionId":"22", "xp":75, "feedback":"Pasas con agilidad."}, "failure":{"sectionId":"combat", "xp":25, "combat_setup":"cart_noise_rats", "targetSectionAfterCombat":"22", "enemy_data":[{"name":"Rata Gigante","indicator":"💀","count":"1d4+1", "stats": {
+    "pv_base": 5, "ca": 10, "velocidad": 9, "xp_value": 25,
+    "caracteristicas": { "fue": 7, "des": 11, "con": 9, "int": 2, "sab": 10, "car": 4 },
+    "salvaciones": { "des": "+0" },
+    "habilidades_competentes": {},
+    "resistencias_dano": [], "inmunidades_dano": [], "vulnerabilidades_dano": [], "inmunidades_condicion": [],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 10, "sentido_agudo": "olfato (Ventaja Perc. Olfato)"},
+    "idiomas": ["-"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "1d4", "tipo_dano": "perforante" }
+    ],
+    "habilidades_especiales": [ { "id":"tactica_manada_rata", "nombre":"Táctica de Manada", "tipo_accion":"Pasiva", "descripcion":"Ventaja en ataque si aliado no incapacitado está a 1.5m del objetivo."}],
+    "ia_basica": { "prioridad_objetivo": "herido/mas_cercano", "movimiento": "acercarse_en_grupo"}
+}}], "feedback":"¡Tropiezas! Atraes ratas."}} },
+             { "text": "Buscar Ruta Alternativa Cercana (Percepción)", "check": { "stat": "SAB", "dc": 15 }, "next": { "success":{ "sectionId":"23", "xp":75, "feedback":"Encuentras grieta lateral oculta." }, "failure":{"sectionId":"20", "xp":25, "path":"cart_no_bypass", "feedback":"No ves alternativa obvia."}} },
+             { "text": "Examinar Barricada", "class_req": "Pícaro/Ingeniero", "check": { "stat": "INT_INV", "dc": 13 }, "next": { "success":{ "sectionId":"20", "xp":100, "path":"cart_examined", "feedback":"Confirmado: barricada intencionada. Ghoruk teme algo (¿detrás?). Puedes desmontarla (FUE 10) o pasar (DES 12 sin tirada)."}, "failure":{"sectionId":"20", "xp":25, "path":"cart_examined_fail", "feedback":"Parece una barricada, sí."}} }
+        ]
+     },
+     "21": {
+      "id": 21,
+      "title": "Guarida Goblin - Botín y Salidas",
+      "xp_reward": 75,
+      "description": "Los ecos de la lucha goblin se apagan. La galería apesta. Registras los restos y el campamento improvisado.",
+      "enemies": [],
+      "options": [
+        {
+          "text": "Saquear (Investigación)",
+          "check": { "stat": "INT", "dc": 11 },
+          "next": {
+            "success": { "sectionId": "21", "xp": 75, "path": "loot_success", "feedback": "Encuentras 1d12+5 MO, Poción Cur. Menor (en Snag), Mapa Piel T., Orejas/Cabeza para Gremio. Descubres Pozo Ventilación oculto.", "items_gained": ["gold_random_1d12_5", "potion_healing_minor", "map_goblin"], "flags_set":["can_use_vent_shaft","has_goblin_trophies"], "unlocks_option_B": true },
+            "failure": { "sectionId": "21", "xp": 25, "path": "loot_fail", "feedback": "Solo basura. Quizás el Mapa esté a simple vista si buscas bien...", "unlocks_option_C":true }
+          }
+        },
+         {
+          "text": "[B] Investigar/Usar Pozo Ventilación (Requiere Éxito Saqueo)",
+           "precondition_flag": ["can_use_vent_shaft"],
+           "check": { "stat": "FUE", "dc": 10 },
+           "next": {
+             "success": { "sectionId": "26", "xp": 50, "feedback": "Abres paso. Sube a superficie cerca Ruinas. ¡Oportunidad/Riesgo!" },
+             "failure": { "sectionId": "21", "xp": 25, "path": "vent_shaft_stuck", "feedback": "Atascado/Inestable. No puedes usarlo.", "flags_remove":["can_use_vent_shaft"] }
+            }
+        },
+        {
+           "text": "[C] Buscar Mapa si Falló Saqueo (Percepción)",
+            "precondition_flag": ["loot_fail"], 
+            "check": { "stat": "SAB", "dc": 14 },
+             "next": {
+                "success": { "sectionId": "21", "xp": 50, "path": "map_found_anyway", "feedback": "Rebuscando encuentras el Mapa Piel T.", "items_gained":["map_goblin"], "unlocks_options_map": true}, 
+                "failure": { "sectionId": "21", "xp": 10, "path": "no_map", "feedback": "No encuentras mapa. Deberás explorar a ciegas."}
+              }
+        },
+        {
+          "text": "Seguir Ruta 'JEFE GRANDE' (Requiere Mapa o Intuir)",
+          "precondition_flag": ["map_found_anyway OR loot_success OR always_available"], 
+          "next": { "sectionId": "25", "xp": 50 }
+        },
+        {
+          "text": "Seguir Ruta '? ARRIBA' (Requiere Mapa)",
+           "precondition_flag": ["map_found_anyway OR loot_success"],
+           "next": { "sectionId": "27", "xp": 75, "feedback":"El camino asciende por un túnel viejo e inestable..."}
+        },
+        {
+          "text": "Seguir Ruta '¿MAS PODER ABAJO?' (Requiere Mapa)",
+          "precondition_flag": ["map_found_anyway OR loot_success"],
+           "next": { "sectionId": "36", "xp": 100, "feedback":"Te aventuras a las profundidades indicadas..." }
+        }
+      ]
+    },
+    "22": {
+      "id": 22,
+      "title": "Túnel Profundo - ¡Emboscada Voraz!",
+      "xp_reward": 50,
+      "description": "Más allá de la barricada. Martilleo MUY cercano. Olor ozono/corrupción fuerte. Restos de puerta destrozada desde dentro. Justo cuando vas a mirar... ¡Siseos y GARRAS veloces surgen de grietas y oscuridad!",
+      "enemies": [
+          { "name": "Ghoul de Túnel", "indicator": "💀💀", "count": "1d4+1", "stats": {
+    "pv_base": 22, "ca": 12, "velocidad": 9, "xp_value": 150,
+    "caracteristicas": { "fue": 13, "des": 15, "con": 10, "int": 7, "sab": 10, "car": 6 },
+    "salvaciones": { "des": "+2" },
+    "habilidades_competentes": { "percepcion":"+2", "sigilo":"+4" },
+    "resistencias_dano": [], "inmunidades_dano": ["veneno"], "vulnerabilidades_dano": [], "inmunidades_condicion": ["hechizado", "agotamiento", "envenenado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 12 },
+    "idiomas": ["Común (Gutural)"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "2d4+2", "tipo_dano": "perforante" },
+        { "id": "garras_paralizantes", "nombre": "Garras Paralizantes", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "2d4+2", "tipo_dano": "cortante",
+           "efecto_adicional": { "tipo":"salvacion", "descripcion": "Si objetivo no es elfo/no-muerto, Salva CON CD 10 o queda Paralizado 1 minuto. Puede repetir salva al final de sus turnos.", "stat_salva":"con", "cd_salva":10, "efecto_fallo":"paralizado_1m_save_ends"}}
+    ],
+    "habilidades_especiales": [],
+    "ia_basica": { "prioridad_objetivo": "paralizar_con_garras", "movimiento": "usar_sigilo_emboscar"}
+} }
+       ],
+       "combat_surprise_check": { "enemy_stealth_roll": "1d20+3", "vs_player_passive_perception": true}, 
+       "options": [
+            { "text": "¡Combatir la Amenaza Necrófaga!", "next": { "sectionId": "combat", "xp": 0, "combat_setup": "ghoul_ambush", "targetSectionAfterCombat": "30", "enemy_pool_ids": ["ghoul_tunnel"] } },
+            { "text": "Retirada Táctica a Cobertura (Ej: Vagoneta)", "next": { "sectionId": "combat", "xp": 0, "combat_setup": "ghoul_ambush_fallback", "targetSectionAfterCombat": "30", "enemy_pool_ids": ["ghoul_tunnel"], "feedback": "Retrocedes buscando ventaja..." } },
+            { "text": "Poder Divino contra Aberración (Fe)", "class_req":"Clérigo/Paladín", "check":{ "stat": "SAB_OR_CAR_CHANNEL", "dc": 14 }, "next": { "success":{"sectionId":"combat", "xp": 75, "combat_setup":"ghoul_ambush_weakened", "targetSectionAfterCombat": "30", "enemy_pool_ids": ["ghoul_tunnel"], "feedback":"¡Tu fe los hiere/hace dudar!" }, "failure": {"sectionId":"combat", "xp": 25, "combat_setup": "ghoul_ambush", "targetSectionAfterCombat": "30", "enemy_pool_ids": ["ghoul_tunnel"] } } },
+            { "text": "¡Carga Imprudente!", "class_req":"Guerrero/Bárbaro", "next": { "sectionId":"combat", "xp": 50, "combat_setup": "ghoul_ambush_reckless_charge", "targetSectionAfterCombat": "30", "enemy_pool_ids": ["ghoul_tunnel"], "feedback":"¡AAAAAAAAARGH!"}}
+       ]
+    },
+    "23": {
+       "id": 23,
+       "title": "Pasaje Oculto Completado",
+       "xp_reward": 75,
+       "description": "Sales de la grieta polvorienta tras la barricada. Evitaste el obstáculo, pero ves <strong>huesos frescos roídos</strong> y una <strong>marca espiral húmeda</strong>. Algo peligroso ronda. El martilleo de Ghoruk está justo delante.",
+       "enemies": [],
+        "options": [], 
+        "next_section": "22" 
+     },
+     "24": {
+        "id": 24,
+        "title": "Ruta Subterránea - Guarida Solitaria",
+        "xp_reward": 75,
+         "description": "La caverna apesta a muerte y podredumbre. Huesos humanoides y animales apilados en rincones oscuros. En el centro, <strong>1 Ghoul de Túnel</strong>💀💀 (PV 22) devora algo irreconocible. Te detecta. Sisea, garras listas. El único túnel visible para seguir está tras él. [%IF path=='fall_from_above' THEN '<strong>¡Caíste justo aquí! Estás dolorido y en mala posición.</strong>' ELSE ''%]",
+        "enemies": [ { "name": "Ghoul de Túnel", "indicator": "💀💀", "count": 1, "stats": {
+    "pv_base": 22, "ca": 12, "velocidad": 9, "xp_value": 150,
+    "caracteristicas": { "fue": 13, "des": 15, "con": 10, "int": 7, "sab": 10, "car": 6 },
+    "salvaciones": { "des": "+2" },
+    "habilidades_competentes": { "percepcion":"+2", "sigilo":"+4" },
+    "resistencias_dano": [], "inmunidades_dano": ["veneno"], "vulnerabilidades_dano": [], "inmunidades_condicion": ["hechizado", "agotamiento", "envenenado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 12 },
+    "idiomas": ["Común (Gutural)"],
+    "ataques": [
+        { "id": "mordisco", "nombre": "Mordisco", "tipo": "cac", "bono_ataque": "+2", "alcance": "1.5m", "objetivos": 1, "dano": "2d4+2", "tipo_dano": "perforante" },
+        { "id": "garras_paralizantes", "nombre": "Garras Paralizantes", "tipo": "cac", "bono_ataque": "+4", "alcance": "1.5m", "objetivos": 1, "dano": "2d4+2", "tipo_dano": "cortante",
+           "efecto_adicional": { "tipo":"salvacion", "descripcion": "Si objetivo no es elfo/no-muerto, Salva CON CD 10 o queda Paralizado 1 minuto. Puede repetir salva al final de sus turnos.", "stat_salva":"con", "cd_salva":10, "efecto_fallo":"paralizado_1m_save_ends"}}
+    ],
+    "habilidades_especiales": [],
+    "ia_basica": { "prioridad_objetivo": "paralizar_con_garras", "movimiento": "usar_sigilo_emboscar"}
+} }],
+         "options": [
+             { "text": "Combatir al Necrófago", "next": { "sectionId": "combat", "xp": 0, "combat_setup": "ghoul_lair", "targetSectionAfterCombat": "28", "enemy_pool_ids": ["ghoul_tunnel"]} },
+             { "text": "Distraer y Pasar Sigilo (Requiere Plan/Ítem)", "check":{ "stat": "DES_STEALTH_VS_PERCEPTION", "dc": 15 }, "next": { "success": { "sectionId":"28", "xp":100, "feedback":"¡Funciona! Te deslizas mientras se distrae." }, "failure":{ "sectionId": "combat", "xp": 50, "combat_setup": "ghoul_lair", "targetSectionAfterCombat": "28", "enemy_pool_ids": ["ghoul_tunnel"] } } },
+             { "text": "Registrar Guarida (Tras Combate)", "precondition_flag":["ghoul_defeated_in_24"], "check":{ "stat":"INT", "dc": 12}, "next":{ "success":{ "sectionId":"28", "xp":50, "items_gained":["silver_chain", "copper_ring", "ghoul_tooth"], "feedback":"Encuentras baratijas y un diente asqueroso." }, "failure": {"sectionId":"28", "xp":0, "feedback":"Solo inmundicia."}} },
+              { "text": "Calmar / Comunicar (Arcano/Primal)", "class_req":"Chamán/Nigromante?", "check":{ "stat":"SAB_OR_CAR_SPECIAL", "dc":17}, "next": { "success": { "sectionId":"28", "xp":150, "feedback":"Sorprendentemente, duda ante tu presencia. Te deja pasar si no tocas sus 'tesoros'." }, "failure":{ "sectionId": "combat", "xp": 50, "combat_setup": "ghoul_lair", "targetSectionAfterCombat": "28", "enemy_pool_ids": ["ghoul_tunnel"]}} }
+         ]
+    },
+     "25": {
+       "id": 25,
+       "title": "Minas Profundas - Bifurcación Final",
+       "xp_reward": 75,
+       "description": "Siguiendo la marca 'JEFE GRANDE'. Aire pesado, opresión creciente. Marcas espirales frenéticas, sangre seca, restos goblins descuartizados con saña. El túnel desciende a una última bifurcación: <strong>Izquierda:</strong> Más ancho, reforzado, el ruido de martillo es ensordecedor desde allí. <strong>Derecha:</strong> Estrecho, silencioso, débil olor químico.",
+       "enemies": [],
+       "options": [
+            { "text": "Tomar Izquierda (¡Hacia Ghoruk!)", "next": { "sectionId": "29", "xp": 50, "feedback": "Te preparas para la confrontación..." } },
+            { "text": "Explorar Derecha (¿Almacén Explosivos?)", "check": { "stat": "INT_INV", "dc": 14 }, "next": { "success": { "sectionId": "25", "xp": 100, "path":"explosives_found", "feedback":"Almacén viejo. Encuentras 2 Dinamitas inestables y casco.", "items_gained":["dynamite_x2","helmet_miner"] }, "failure": { "sectionId": "25", "xp": 25, "path":"explosives_fail", "feedback":"Pequeño derrumbe bloquea entrada. Mejor ir por la izquierda."}, "critical_failure":{"sectionId":"25", "xp":10, "penalty":"lose_hp_2d6_possibly_separated", "feedback":"¡BOOM! Sales volando (-2d6 PV). Ruta bloqueada." }}},
+             { "text": "Leer la Piedra / Sentir Corrupción", "class_req":"Enano/Chamán", "check": { "stat":"INT_OR_SAB_SPECIAL", "dc":13}, "next": { "success": { "sectionId": "25", "xp": 50, "path":"stone_info_corruption", "feedback": "Camino Izq es principal. Dcha abandonado. La roca misma exuda corrupción." }, "failure": { "sectionId": "25", "xp": 10, "feedback": "Solo rocas..." } } }
+        ]
+    },
+     "26": {
+        "id": 26,
+        "title": "Salida Oculta - Interludio Táctico",
+        "xp_reward": 50,
+         "description": "Subes por el pozo de ventilación (Requiere tirada FUE/DES Atl/Acro CD 12 para salir). Llegas a la superficie, oculto entre maleza ¡cerca de las Ruinas (S3)! Es de noche/atardecer. El aire exterior es un alivio... ¿o solo una breve pausa?",
+         "enemies": [],
+         "options": [
+              { "text": "Visitar Mercado Negro (Rápido, Riesgoso)", "next": { "sectionId": "9", "xp": 100, "path":"revisit_black_market", "feedback":"Te diriges sigilosamente a la entrada del mercado..."}},
+              { "text": "Visitar Borde Pueblo (Gremio/Legal - MUY Riesgoso)", "next": { "sectionId":"town_visit_placeholder", "xp":150, "feedback":"Te arriesgas a volver a Grimhold..."} }, 
+              { "text": "Descanso Corto Seguro (1h)", "next": { "sectionId":"26", "xp":25, "feedback":"Recuperas aliento bajo las estrellas (si las hay)...", "trigger_short_rest": true}},
+              { "text": "Descanso Largo Oculto (8h - Muy Arriesgado)", "next": { "sectionId":"26", "xp":200, "feedback":"Intentas un descanso completo, esperando no ser descubierto...", "trigger_long_rest":true, "encounter_check": {"chance":30, "table":"surface_night"} }}, 
+              { "text": "Volver Inmediatamente a las Minas (Descender Pozo)", "next": { "sectionId":"25", "xp":25, "feedback":"Vuelves a la oscuridad del Nido Goblin..."}}
+         ]
+     },
+     "27": {
+       "id": 27,
+       "title": "Ruta Ascendente Inestable",
+       "xp_reward": 75,
+       "description": "Sigues el túnel '? ARRIBA'. Asciende notablemente. Rocas sueltas, vigas podridas, crujidos ominosos. El suelo es claramente inestable, suspendido sobre una caverna oscura abajo.",
+       "enemies": [],
+       "options": [
+            { "text": "Avanzar con Precaución Extrema (Acrobacia/Sigilo)", "check": { "stat":"DES", "dc":15}, "next": { "success": {"sectionId":"35B", "xp":100, "feedback":"¡Lo logras! Llegas a cámara superior bloqueada."}, "failure": {"sectionId":"24", "xp":25, "penalty":"lose_hp_1d6_2_fall", "feedback":"¡SUELO CEDE! Caes a la caverna inferior (Guarida Ghoul S24)." } , "critical_failure":{"sectionId":"21", "xp":10, "penalty":"lose_hp_1d4", "feedback":"¡DERRUMBE MAYOR! Ruta bloqueada. Vuelves a Nido Goblin."} }},
+            { "text": "Reforzar/Evaluar Estabilidad (Ingeniería/Cuerda)", "check": { "stat":"INT_OR_ITEM", "dc":16}, "next": { "success": { "sectionId":"35B", "xp":75, "feedback":"Identificas/Creas paso seguro." }, "failure": {"sectionId":"21", "xp":25, "feedback":"Inviable. Mejor volver."}}},
+            { "text": "Evaluar Estructura", "class_req":"Ingeniero/Constructor", "check":{"stat":"INT", "dc":12}, "next":{ "success":{"sectionId":"35B", "xp":75, "feedback":"Peligroso, pero ves ruta lateral segura por la pared."}, "failure":{"sectionId":"21", "xp":25, "feedback":"Mal asunto. Mejor volver."}}}
+        ]
+     },
+     "28": {
+        "id": 28,
+        "title": "El Cruce Acuático Profundo",
+        "xp_reward": 75,
+        "description": "El túnel llega a un obstáculo natural: un <strong>riachuelo subterráneo</strong>. Agua turbia y helada fluye con corriente moderada, alcanzando la cintura. Restos de un puente podrido flotan inútilmente. Al otro lado, el túnel continúa y el sonido rítmico del martilleo de Ghoruk es claro y cercano.",
+        "enemies": [],
+        "options": [
+            {
+                "text": "Vadeo Directo (Atletismo/Acrobacia)",
+                "check": { "stat": "FUE_OR_DES", "dc": 13 },
+                "next": {
+                     "success": { "sectionId": "29", "xp": 50, "feedback": "Luchas contra la corriente fría y llegas al otro lado, empapado pero decidido." },
+                     "failure": { "sectionId": "29", "xp": 25, "penalty": "lose_hp_1d4_wet_disadvantage", "feedback": "¡Resbalas! Eres arrastrado (-1d4 PV), quedas Mojado (Desv. próx tirada DES/CON)." }
+                 }
+            },
+            {
+                 "text": "Buscar Cruce Alternativo (Rocas/Salto)",
+                 "check": { "stat": "INT_OR_SAB", "dc": 14 },
+                 "next": {
+                      "success": { "sectionId": "28", "xp": 75, "path":"found_rocks", "feedback": "Encuentras rocas estables/tablón usable. Puedes cruzar saltando/en equilibrio (DES Acro CD 10).", "unlocks_option_cross_dry":true },
+                      "failure": { "sectionId": "28", "xp": 25, "feedback": "No ves mejor opción. Parece que tendrás que mojarte." }
+                 }
+            },
+            {
+                 "text": "[CRUZAR SECO] Saltar por Rocas / Usar Tablón",
+                  "precondition_flag": ["found_rocks"],
+                  "check": { "stat": "DES", "dc": 10 },
+                 "next": {
+                       "success": { "sectionId":"29", "xp":50, "feedback":"Cruzas hábilmente, manteniéndote seco."},
+                       "failure": { "sectionId": "29", "xp": 25, "penalty":"lose_hp_1d4_wet_disadvantage", "feedback":"¡Casi! Resbalas al final (-1d4 PV), quedas Mojado (Desv)." }
+                  }
+            },
+            {
+                 "text": "Asegurar Cruce con Cuerda (Fuerza)",
+                 "check": { "stat": "FUE", "dc": 13 },
+                 "next": {
+                      "success": { "sectionId": "29", "xp": 75, "feedback": "La cuerda queda tensa. Cruce seguro (aunque os mojáis)." , "item_used":"rope"},
+                      "failure": { "sectionId": "28", "xp": 25, "feedback": "No encuentras anclaje firme/la cuerda resbala. Intenta otra cosa." }
+                  }
+             },
+            {
+                "text": "Manipular Agua/Hielo (Magia)",
+                 "class_req": "Hechicero/Mago",
+                 "check": { "stat": "INT_OR_CAR_SPELL", "dc": 15 },
+                "next": {
+                      "success": { "sectionId": "29", "xp": 100, "feedback": "Breve puente de hielo/corriente calmada permite cruzar fácilmente y seco." },
+                      "failure": { "sectionId": "28", "xp": 25, "feedback": "Tu magia no es suficiente para controlar el flujo." }
+                  }
+             }
+        ]
+    },
+     "29": {
+       "id": 29,
+       "title": "Antesala de la Locura - Trampas Finales",
+       "xp_reward": 100,
+        "description": "Has superado el agua. El martilleo es ENSORDECEDOR ahora, justo delante. Las paredes están CUBIERTAS de <strong>Marcas Espirales</strong> frenéticas (sangre y ¿polvo mineral?). Huesos goblin rotos con saña. Ghoruk está cerca... ¡y ha dejado trampas orcas!",
+        "enemies": [],
+        "traps": [
+           {"id": "trap1_bear_traps", "description":"Cepos de oso ocultos bajo escombros.", "detection_dc": 15, "detection_stat":"SAB", "disarm_dc": 14, "disarm_stat":"DES_THIEVES_TOOLS", "avoid_dc":13, "avoid_stat":"DES", "damage": "2d6 P", "effect": "Velocidad Mitad (hasta liberar FUE 15)"},
+           {"id": "trap2_swinging_log", "description":"Tronco pesado listo para oscilar desde el techo.", "detection_dc": 14, "detection_stat":"SAB", "avoid_dc":14, "avoid_stat":"DES", "attack_bonus": "+5", "damage": "3d6 C", "effect":"Salva FUE 14 evita derribo"}
+         ],
+        "options": [
+             {
+                "text": "Avanzar con Extrema Cautela (Detectar y Desarmar/Evitar)",
+                "check": { "stat": "SAB_PERCEPTION", "dc": 14 }, 
+                "next": {
+                     "success": { "sectionId": "29", "xp": 150, "path":"traps_spotted", "feedback": "¡Detectas los Cepos y el Tronco! Puedes intentar desactivarlos/esquivarlos.", "unlocks_option_disarm_avoid":true },
+                     "failure": { "sectionId": "30", "xp": 50, "penalty":"trigger_random_trap_1_or_2", "feedback": "¡Avanzas y activas una trampa!" } 
+                 }
+             },
+             {
+                 "text": "[DESARMAR/EVITAR] Trampas Detectadas",
+                 "precondition_flag":["traps_spotted"],
+                  "check": { "stat": "DES_VARIOUS", "dc": 14 }, 
+                 "next": {
+                     "success": { "sectionId":"30", "xp":100, "feedback":"¡Superas las trampas hábilmente!"},
+                     "failure": { "sectionId":"30", "xp":50, "penalty":"trigger_one_trap_failed_disarm", "feedback":"¡Fallaste al desactivar/esquivar! Activas una trampa." }
+                  }
+             },
+             {
+                  "text": "Avanzar Rápidamente (¡Arriesgado!)",
+                   "next": {
+                      "sectionId": "30", "xp": 25, "penalty":"trigger_all_traps", "feedback":"¡Cargas a ciegas! Activas las trampas..." 
+                   }
+             },
+            {
+                  "text": "Examinar Marcas Espirales (Arcano/Investigación - Riesgo Cordura)",
+                   "check": { "stat": "INT", "dc": 17 },
+                   "next": {
+                       "success": { "sectionId":"29", "xp":100, "path":"whispers_heard", "feedback":"¡AUGE! Oyes la 'Voz': furia, hambre, romper piedra, matar... (Ganas +1 dado daño vs Ghoruk [1 uso], -1d4 daño psíquico, Desv. prox Salva SAB/CAR)."},
+                        "failure": { "sectionId":"29", "xp":50, "path":"whispers_failed", "feedback":"Solo locura y dolor de cabeza (-1d2 daño psíquico)."}
+                    }
+             }
+        ]
+    },
+     "30": {
+       "id": 30,
+       "title": "Guarida del Orco Loco - Observación Final",
+       "xp_reward": 100,
+       "description": "Has llegado. Una <strong>Gran Caverna</strong> natural se abre ante ti. сталактиты gotean. Antorchas parpadeantes revelan a <strong>Ghoruk</strong>💀💀💀, de espaldas, golpeando frenéticamente una <strong>Veta de Mineral Oscuro Brillante</strong> en la pared lejana con un martillo colosal. El sonido es ensordecedor. Cadáver goblin aplastado cerca. Olor acre a ozono, sudor orco y sangre.",
+        "enemies": [ {"name":"Ghoruk, Orco Corrupto", "indicator":"💀💀💀", "stats": {
+    "pv_base": 70,
+    "ca": 13,
+    "velocidad": 9,
+    "xp_value": 750,
+    "caracteristicas": { "fue": 18, "des": 8, "con": 16, "int": 7, "sab": 9, "car": 6 },
+    "salvaciones": { "fue": "+6", "con": "+5" },
+    "habilidades_competentes": { "atletismo":"+6", "intimidacion":"+0", "percepcion":"-1"},
+    "resistencias_dano": [],
+    "inmunidades_dano": ["veneno"],
+    "vulnerabilidades_dano": [],
+    "inmunidades_condicion": ["asustado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Orco", "Común (muy básico, gritos/órdenes)"],
+    "ataques": [
+        {
+            "id": "martillo_corrupto",
+            "nombre": "Martillo de Guerra Corrupto",
+            "tipo": "cac",
+            "bono_ataque": "+6",
+            "alcance": "1.5m",
+            "objetivos": 1,
+            "dano": "1d10+4",
+            "tipo_dano": "contundente",
+            "dano_adicional": { "cantidad": "1d4", "tipo": "necrótico", "condicion":"siempre" },
+            "efecto_adicional": {
+                "tipo": "critico_salvacion",
+                "descripcion": "En un crítico (20 natural), objetivo debe superar Salva CON CD 13 o quedar Aturdido hasta final su próximo turno.",
+                "stat_salva":"con", "cd_salva": 13, "efecto_fallo": "aturdido_1_turno"
+             }
+        }
+    ],
+    "habilidades_especiales": [
+         {
+             "id": "embestida_feroz",
+             "nombre": "Embestida Feroz",
+             "tipo_accion": "Principal",
+             "frecuencia": "Recarga(Tras 1 turno sin usarlo)",
+             "descripcion": "Ghoruk mueve hasta 9m en línea recta y ataca con Martillo al primer enemigo en camino con Ventaja. Si impacta, causa daño normal y objetivo debe superar Salva FUE CD 14 o ser Derribado y empujado 1.5m.",
+             "efecto": {"tipo":"movimiento_ataque_especial", "ataque_id":"martillo_corrupto", "ventaja_ataque":true, "salva_post_impacto":{"stat_salva":"fue", "cd_salva":14, "efecto_fallo":"derribado_empujado_1.5m"} }
+         },
+         {
+             "id": "furia_sombra",
+             "nombre": "Furia de la Sombra",
+             "tipo_accion": "Pasiva/Desencadenada",
+             "desencadenante": "pv_actual < pv_max * 0.5",
+             "descripcion": "Al bajar de mitad PV, la marca brilla. Gana +1d6 necrótico daño martillo, Resistencia a daño Físico no mágico, puede usar Embestida Feroz como Acción Adicional (si recargada). Sufre Desv. Salvas INT/SAB.",
+             "efecto": { "tipo":"mejora_propia_estado", "estado_id": "furia_sombra_activa" }
+          },
+          {
+              "id":"voz_sombra",
+              "nombre": "Voz de la Sombra",
+              "tipo_accion": "Pasiva/Aleatoria",
+              "desencadenante": "Inicio del turno de Ghoruk (excepto el 1ro)",
+              "descripcion":"El AJ tira 1d6: 1-4=Actúa normal; 5=Confuso (ataca criatura más cercana, aliada o enemiga); 6=Grita a la Voz (no ataca este turno, puede moverse).",
+               "efecto": { "tipo": "comportamiento_aleatorio", "tirada":"1d6", "resultados":{"1-4":"normal", "5":"confuso_ataca_cercano", "6":"aturdido_parcial_sin_ataque"}}
+          }
+    ],
+    "ia_basica": {
+        "prioridad_objetivo": "el_que_hizo_mas_dano/concentrador",
+        "movimiento": "acercarse_cac_principalmente",
+        "uso_habilidad":"usar_embestida_si_recargada_y_util, priorizar_ataque_martillo"
+     }
+} }],
+        "options": [
+             { "text": "Observar Sigilosamente", "check":{"stat":"DES", "dc":12}, "next":{"success":{"sectionId":"31", "xp":50, "feedback":"Observas sin ser visto. Es tu oportunidad."}, "failure":{"sectionId":"32", "xp":0, "combat_setup":"no_surprise", "feedback":"¡Te oye/ve! ¡INTRUSOS!"} }},
+             { "text": "Preparar Emboscada / Hechizo Sigiloso", "precondition_flag":["observed_unseen?"], "next":{"sectionId":"31", "xp":50, "feedback":"Te preparas en las sombras..."}},
+             { "text": "¡POR AETHELGARD! (Cargar Gritando)", "next":{"sectionId":"32", "xp":25, "combat_setup":"no_surprise"} },
+             { "text": "¿Hablar con la Locura?", "class_req":"Bardo", "check":{"stat":"CAR", "dc":19}, "next":{ "success":{"sectionId":"32", "xp":150, "combat_setup":"ghoruk_confused_1_turn", "feedback":"¡Increíble! Tu voz rompe su furia... brevemente."}, "failure":{"sectionId":"32", "xp":50, "combat_setup":"no_surprise_aggro", "feedback":"'¡MENTIRAS! ¡MORIR!'"}} },
+              { "text": "Analizar Corrupción/Mineral (Arcano)", "class_req": "Hechicero/Mago", "check": { "stat":"INT", "dc":16}, "next":{"success":{"sectionId":"30", "xp":75, "path":"analyzed_corruption", "feedback":"Detectas aura Nigro/Transmutación. Amplifica ira. Radiante/Sagrado podría ser efectivo."},"failure":{"sectionId":"30", "xp":25, "path":"analyzed_fail", "feedback":"Maldad palpable, pero detalles esquivos."}} }
+        ]
+    },
+     "31": {
+        "id": 31,
+        "title": "Plan Táctico - Segundos Preciosos",
+        "xp_reward": 50,
+        "description": "Ghoruk sigue golpeando, el ruido es vuestra cobertura. Tienes unos segundos para actuar. ¿Cuál es el plan?",
+        "enemies": [],
+         "options": [
+             { "text": "¡ATAQUE SORPRESA COORDINADO!", "next":{"sectionId":"32", "xp":0, "combat_setup":"surprise_player"} },
+             { "text": "Derribar Estalactita sobre él (Ataque Distancia Preciso)", "check": { "stat":"ATQ_DISTANCIA", "dc":16 }, "next":{"success":{"sectionId":"32", "xp":100, "combat_setup":"ghoruk_damaged_start", "feedback":"¡CRACK! ¡Impacto! Ghoruk ruge herido."}, "failure":{"sectionId":"32", "xp":25, "combat_setup":"no_surprise_alerted", "feedback":"Fallas/No cae bien. ¡Ghoruk se gira!"}} },
+             { "text": "Distracción Sonora + Flanqueo", "check":{ "stat":"ENGANO_VS_PERC_G", "dc":14 }, "next":{ "success":{ "sectionId":"32", "xp":75, "combat_setup":"flank_advantage_1st_atk", "feedback":"Ghoruk mira el ruido. ¡Ventaja para los flanqueadores!" }, "failure":{"sectionId":"32", "xp":25, "combat_setup":"no_surprise_failed_distraction", "feedback":"¡Os ha visto! El plan falla."}} }
+         ]
+    },
+     "32": {
+       "id": 32,
+       "title": "¡CLIMAX! COMBATE CONTRA GHORUK",
+       "xp_reward": 750,
+        "description": "[%IF combat_setup=='surprise_player' THEN '¡Vuestro ataque coordinado pilla a Ghoruk desprevenido!' ELSEIF combat_setup=='ghoruk_confused_1_turn' THEN 'Tu intervención ha sembrado el caos en su mente... por un instante.' ELSEIF combat_setup=='ghoruk_damaged_start' THEN 'Herido por la estalactita, Ghoruk brama de dolor y furia.' ELSE '\"¡MORIRÉIS!\", ruge Ghoruk, la marca espiral ardiendo en su frente mientras levanta su martillo corrupto.' %] ¡La batalla por las minas comienza!",
+       "enemies": [ {"name":"Ghoruk, Orco Corrupto", "indicator":"💀💀💀", "stats": {
+    "pv_base": 70,
+    "ca": 13,
+    "velocidad": 9,
+    "xp_value": 750,
+    "caracteristicas": { "fue": 18, "des": 8, "con": 16, "int": 7, "sab": 9, "car": 6 },
+    "salvaciones": { "fue": "+6", "con": "+5" },
+    "habilidades_competentes": { "atletismo":"+6", "intimidacion":"+0", "percepcion":"-1"},
+    "resistencias_dano": [],
+    "inmunidades_dano": ["veneno"],
+    "vulnerabilidades_dano": [],
+    "inmunidades_condicion": ["asustado"],
+    "sentidos": { "vision_oscuridad": 18, "percepcion_pasiva": 9 },
+    "idiomas": ["Orco", "Común (muy básico, gritos/órdenes)"],
+    "ataques": [
+        {
+            "id": "martillo_corrupto",
+            "nombre": "Martillo de Guerra Corrupto",
+            "tipo": "cac",
+            "bono_ataque": "+6",
+            "alcance": "1.5m",
+            "objetivos": 1,
+            "dano": "1d10+4",
+            "tipo_dano": "contundente",
+            "dano_adicional": { "cantidad": "1d4", "tipo": "necrótico", "condicion":"siempre" },
+            "efecto_adicional": {
+                "tipo": "critico_salvacion",
+                "descripcion": "En un crítico (20 natural), objetivo debe superar Salva CON CD 13 o quedar Aturdido hasta final su próximo turno.",
+                "stat_salva":"con", "cd_salva": 13, "efecto_fallo": "aturdido_1_turno"
+             }
+        }
+    ],
+    "habilidades_especiales": [
+         {
+             "id": "embestida_feroz",
+             "nombre": "Embestida Feroz",
+             "tipo_accion": "Principal",
+             "frecuencia": "Recarga(Tras 1 turno sin usarlo)",
+             "descripcion": "Ghoruk mueve hasta 9m en línea recta y ataca con Martillo al primer enemigo en camino con Ventaja. Si impacta, causa daño normal y objetivo debe superar Salva FUE CD 14 o ser Derribado y empujado 1.5m.",
+             "efecto": {"tipo":"movimiento_ataque_especial", "ataque_id":"martillo_corrupto", "ventaja_ataque":true, "salva_post_impacto":{"stat_salva":"fue", "cd_salva":14, "efecto_fallo":"derribado_empujado_1.5m"} }
+         },
+         {
+             "id": "furia_sombra",
+             "nombre": "Furia de la Sombra",
+             "tipo_accion": "Pasiva/Desencadenada",
+             "desencadenante": "pv_actual < pv_max * 0.5",
+             "descripcion": "Al bajar de mitad PV, la marca brilla. Gana +1d6 necrótico daño martillo, Resistencia a daño Físico no mágico, puede usar Embestida Feroz como Acción Adicional (si recargada). Sufre Desv. Salvas INT/SAB.",
+             "efecto": { "tipo":"mejora_propia_estado", "estado_id": "furia_sombra_activa" }
+          },
+          {
+              "id":"voz_sombra",
+              "nombre": "Voz de la Sombra",
+              "tipo_accion": "Pasiva/Aleatoria",
+              "desencadenante": "Inicio del turno de Ghoruk (excepto el 1ro)",
+              "descripcion":"El AJ tira 1d6: 1-4=Actúa normal; 5=Confuso (ataca criatura más cercana, aliada o enemiga); 6=Grita a la Voz (no ataca este turno, puede moverse).",
+               "efecto": { "tipo": "comportamiento_aleatorio", "tirada":"1d6", "resultados":{"1-4":"normal", "5":"confuso_ataca_cercano", "6":"aturdido_parcial_sin_ataque"}}
+          }
+    ],
+    "ia_basica": {
+        "prioridad_objetivo": "el_que_hizo_mas_dano/concentrador",
+        "movimiento": "acercarse_cac_principalmente",
+        "uso_habilidad":"usar_embestida_si_recargada_y_util, priorizar_ataque_martillo"
+     }
+} }],
+        "is_combat_node": true,
+        "combat_rules": ["Ghoruk_Special_Abilities", "Environment_Hazards_Optional"],
+        "next_section_on_win": "33",
+        "next_section_on_loss": "tpk_ending"
+    },
+    "33": {
+      "id": 33,
+      "title": "Victoria Amarga - Silencio y Ecos",
+      "xp_reward": 100,
+       "description": "Con un estertor final, Ghoruk se desploma. El martillo cae con estrépito. La marca espiral se apaga, dejando humo negro y una cicatriz supurante. Silencio. Solo tu respiración agitada, goteo de agua y el crepitar moribundo de las antorchas. Habéis vencido...",
+      "enemies": [],
+      "options": [
+          { "text": "Registrar Cadáver de Ghoruk", "next":{ "sectionId": "34", "xp":100}},
+          { "text": "Examinar Veta Mineral / Zona Trabajo", "next":{ "sectionId":"35", "xp":100}},
+          { "text": "Descanso Corto (¡Necesario!)", "next": {"sectionId":"33", "xp":50, "path":"rested_post_boss", "feedback":"Recuperas aliento junto al cadáver del orco.", "trigger_short_rest":true}}
+       ]
+    },
+    "34": {
+        "id": 34,
+        "title": "Tesoros del Orco Loco - Botín de Guerra",
+        "xp_reward": 100,
+        "description": "Revisas el cadáver aún caliente de Ghoruk y su equipo improvisado. Apesta, pero la necesidad apremia.",
+        "enemies": [],
+        "options": [],
+        "loot_list": [
+             { "item_id": "warhammer_corrupt", "name": "Martillo Guerra Corrupto Ghoruk", "quantity": 1, "description": "Arma 2M, Pesada. 1d10 C + 1d6 Necrótico. FUE 16 req. ¿Corrompe al portador?"},
+             { "item_id": "armor_orc_patchwork", "name": "Armadura Improvisada Orca", "quantity": 1, "description": "Equivale a Armadura Pieles Mejorada (CA 12+ModDES(max+2)). Pesada."},
+             { "item_id": "gold_coins", "name":"Monedas Oro", "quantity": "4d10+10" },
+             { "item_id": "goblin_teeth_sharp", "name":"Dientes Goblin Afilados", "quantity": "1d6+2"},
+             { "item_id": "onyx_small_x3", "name":"Ónix Pequeños (x3)", "quantity": 3, "value_ea": 25 },
+             { "item_id": "mineral_shard_large", "name":"Fragmento Grande Mineral Oscuro", "quantity": 1, "description":"Pulsa débilmente. Frío al tacto. Irradia mal. ¡OBJETO CLAVE!"}
+         ],
+         "actions_available":[
+              {"text":"Intentar Cortar Cabeza Ghoruk (Trofeo Gremio)", "check":{"stat":"FUE_SLASHING", "dc":14}, "reward": {"item_id":"ghoruk_head", "xp":50, "feedback_success":"¡Trofeo macabro asegurado! (100 MO en Gremio)", "feedback_fail":"Demasiado difícil/asqueroso."}}
+          ],
+         "next_section_prompt": "Después de saquear, ¿examinas la zona de trabajo (S35) o decides tu próximo movimiento (S37)?"
+     },
+
+    "35": {
+        "id": 35,
+        "title": "La Veta Maligna y el Mapa del Loco",
+        "xp_reward": 100,
+        "description": "Te acercas a la pared golpeada por Ghoruk. La <strong>Veta de Mineral Oscuro</strong> pulsa con luz fría y enfermiza, hundiéndose en la roca. Tocarla directamente causa 1d4 daño necrótico y susurros intensos (Salva SAB CD 12 o Aturdido 1 turno). Pegado a la pared con sangre seca, encuentras un <strong>Mapa Toso en Piel Curtida</strong>.",
+        "enemies": [],
+        "map_details": { 
+              "route_1": { "id": "route_castle_up", "label": "\"CASTILLO ARRIBA\"", "description": "Túnel ascendente marcado con torre/castillo. Ruta obvia salida/objetivo.", "targetSection": "FIN_CAP1_GO_CASTLE" },
+              "route_2": { "id": "route_power_down", "label": "\"¿MAS PODER ABAJO?\"", "description": "Túnel descendente estrecho con espirales/interrogantes. ¿Origen mineral?", "targetSection": "36" },
+              "route_3": { "id": "route_goblin_exit", "label": "\"¿SALIDA RAPIDA? / NIDO\"", "description": "Túnel lateral que parece conectar con Guarida Goblin (S21) y Pozo Ventilación.", "targetSection": "21_RETURN"}
+         },
+        "options": [
+              {
+                  "text": "Intentar Extraer Fragmento Pequeño (Requiere Pico)",
+                  "check": { "stat": "FUE", "dc": 15 },
+                  "next": {
+                       "success": { "sectionId": "35", "xp": 50, "feedback": "Consigues un trozo. Sientes el frío y los susurros.", "items_gained":["mineral_shard_small"], "penalty":"touching_vein_effect"},
+                       "failure": { "sectionId": "35", "xp": 10, "feedback": "La roca es demasiado dura aquí."}
+                    }
+              },
+              {
+                 "text": "Estudiar el Mapa y Decidir Ruta",
+                  "next": { "sectionId": "37", "xp": 50, "feedback": "Con el mapa en mano, es hora de elegir..." }
+               }
+         ]
+     },
+
+     "35B": {
+         "id": "35B",
+         "title": "Cámara de la Palanca - Ruta Bloqueada",
+         "xp_reward": 75,
+         "description": "Llegas al final del túnel ascendente inestable. Una pequeña cámara natural. La salida superior está bloqueada por un <strong>derrumbe RECIENTE</strong> de rocas trabajadas (¿del Castillo?), parece sellado desde el OTRO LADO. En la pared, una <strong>PALANCA de hierro grande y oxidada</strong>.",
+         "enemies": [],
+         "options": [
+             {
+                 "text": "Examinar Derrumbe (Investigación)",
+                 "check": { "stat": "INT", "dc": 14 },
+                 "next": {
+                     "success": { "sectionId": "35B", "xp": 50, "path":"rubble_examined", "feedback": "Confirmado: bloqueo desde arriba, intencionado o estructural. Imposible pasar." },
+                     "failure": { "sectionId": "35B", "xp": 10, "feedback": "Solo ves rocas bloqueando."}
+                  }
+              },
+             {
+                  "text": "Accionar la Palanca (Fuerza)",
+                   "check": { "stat": "FUE", "dc": 13 },
+                  "next": {
+                      "success": { "sectionId": "35B", "xp": 100, "path":"lever_pulled", "feedback": "¡CLANG! Baja con esfuerzo. Oyes mecanismos lejanos... ¿Qué habrá hecho?", "flags_set":["ancient_lever_pulled_mines"]},
+                      "failure": { "sectionId": "35B", "xp": 25, "feedback": "Atascada por el óxido. No se mueve." }
+                   }
+              },
+             {
+                 "text": "Volver Atrás (a Nido Goblin S21)",
+                  "next": { "sectionId": "21", "xp": 25, "path":"returned_from_dead_end", "feedback":"Esta ruta no lleva a ninguna parte por ahora." }
+             }
+         ]
+     },
+
+    "36": {
+         "id": 36,
+         "title": "Profundidades Misteriosas - ¿Más Poder?",
+         "xp_reward": 100,
+         "description": "El túnel '¿MAS PODER ABAJO?' desciende a una <strong>Caverna Profunda</strong> y helada. El aire vibra con susurros. En el centro, un <strong>Pozo Natural</strong> insondable exhala un viento gélido cargado de poder oscuro. Alrededor, crecen <strong>Cristales Pálidos</strong> que pulsan débilmente.",
+          "hazard": { "type":"madness_aura", "save_dc":10, "save_stat":"SAB", "effect":"lose_sanity_1_temp", "notes":"Salva cada 10 min."},
+          "enemies": [],
+          "options": [
+              {
+                   "text": "Recolectar Cristales Pálidos (Requiere Herramienta/Cuidado)",
+                   "check": { "stat": "INT_OR_DES", "dc": 14 },
+                   "next": {
+                       "success": { "sectionId": "36", "xp": 75, "feedback": "Obtienes 1d4 Fragmentos Cristal Pálido (componente arcano/peligroso). Sientes leve descarga.", "items_gained":["crystal_pale_shard_1d4"], "penalty":"lose_hp_1"},
+                       "failure": { "sectionId": "36", "xp": 25, "feedback": "Cristal estalla/descarga más fuerte (-1d4 daño eléctrico)." , "penalty":"lose_hp_1d4_electric"}
+                   }
+               },
+              {
+                   "text": "Investigar el Pozo (Asomarse/Bajar Poco con Cuerda)",
+                   "next": { "sectionId": "36", "xp": 50, "path": "well_investigated", "feedback": "Oscuridad total. Viento helado. Susurros intensos. Bajar un poco revela frío extremo y presencia vasta y maligna abajo. Retornas rápido."}
+              },
+             {
+                  "text": "¡Retirarse! (Volver a Nido Goblin S21)",
+                  "next": { "sectionId": "21", "xp": 50, "path":"returned_from_depths", "feedback": "La profundidad es demasiado peligrosa/enigmática por ahora."}
+              }
+          ]
+    },
+
+    "37": {
+        "id": 37,
+        "title": "Cruce de Destinos - Decisión Final",
+        "xp_reward": 50,
+         "description": "Con Ghoruk muerto y la caverna principal explorada (has saqueado/visto mapa/visto veta), te enfrentas a la decisión crucial. El <strong>Fragmento Oscuro</strong> parece susurrar promesas y amenazas. El <strong>Mapa</strong> muestra rutas. ¿Qué camino seguirás?",
+        "enemies": [],
+         "options": [
+              { "text": "Tomar Ruta Mapa: 'CASTILLO ARRIBA'", "next": { "sectionId": "40", "xp": 100, "path":"to_chapter_2_castle", "feedback":"Decides ascender, hacia el corazón del mal..."}},
+              { "text": "Tomar Ruta Mapa: '¿MAS PODER ABAJO?' (o Volver a Explorarla)", "next": { "sectionId": "36", "xp": 50, "feedback":"La curiosidad/ambición te llama a las profundidades..."} },
+              { "text": "Intentar Ruta 'SALIDA RAPIDA' (Vía Nido Goblin/Pozo)", "next": { "sectionId": "38", "xp": 50, "feedback":"Buscas la salida más corta..."}},
+              { "text": "Retirada Larga (Desandar Camino Principal)", "next": { "sectionId": "38", "xp": 25, "path":"long_retreat", "feedback":"Optas por la ruta conocida pero larga para salir..."}}
+          ]
+    },
+
+    "38": {
+        "id": 38,
+        "title": "Salida de las Minas",
+        "xp_reward": 100,
+        "description": "Tras un ascenso tenso por el pozo (si usaste S26) o una larga y cautelosa retirada por los túneles principales (evitando posibles nuevos peligros menores 💀 - AJ puede añadir encuentro aleatorio simple), finalmente ves la luz enfermiza del exterior filtrándose. Sales a la superficie cerca de las Ruinas del Puesto de Guardia, oliendo el aire (relativamente) fresco.",
+        "enemies": [],
+        "options": [],
+        "next_section": "39"
+     },
+
+     "39": {
+       "id": 39,
+       "title": "Superficie de Nuevo... Por Ahora",
+       "xp_reward": 50,
+       "description": "Estás fuera, pero Grimhold y su castillo siguen proyectando su sombra. Has sobrevivido al Capítulo 1. Es momento de tomar un respiro (si puedes) y decidir qué hacer a continuación antes de enfrentar el siguiente capítulo.",
+       "enemies": [],
+       "options": [
+             { "text": "Buscar Descanso Largo (Encontrar Lugar Seguro)", "next": {"sectionId":"39", "xp":150, "feedback":"Tras buscar, encuentras ruina/cueva defendible para un Descanso Largo. ¡Necesario!", "trigger_long_rest":true, "path":"rested_long"} },
+             { "text": "Visitar Mercado Legal / Vender Trofeos Gremio (Si posible)", "next": {"sectionId":"town_visit_placeholder_v2", "xp":75, "feedback":"Te arriesgas a acercarte a Grimhold/Oakhaven..."}},
+             { "text": "Visitar Mercado Negro (Riesgoso)", "next": {"sectionId":"9", "xp":75, "path":"revisit_black_market_surface", "feedback":"Vuelves a buscar los susurros del mercado negro..."}},
+             { "text": "Prepararse y Volver a Entrar (Ruta Castillo/Poder)", "next":{"sectionId":"40", "xp":0, "path":"prepare_for_chap2", "feedback":"Sin descanso prolongado, te preparas para la siguiente fase..."}}
+         ]
+    },
+
+    "40": {
+         "id": 40,
+         "title": "El Peso de la Sombra - Conclusión Capítulo 1",
+         "xp_reward": 200,
+         "description": "Habéis sobrevivido a las Minas Corruptas. Ghoruk cayó. Descubristeis el <strong>Mineral Oscuro</strong>, sentisteis la <strong>'Voz'</strong>, y un <strong>Mapa</strong> señala caminos: hacia el Castillo arriba, o más poder abajo. El <strong>Fragmento</strong> es una carga y una llave. Grimhold sufre, el Castillo espera, pero ahora sois más fuertes, más experimentados... más marcados por la oscuridad. La guerra por Aethelgard apenas comienza.<br><br><strong>¡SUBIDA DE NIVEL!</strong> Habéis acumulado suficiente experiencia. <strong>Avanzáis a NIVEL 3</strong> (o el nivel correspondiente según el XP total y la tabla usada por el AJ).",
+          "enemies": [],
+          "level_up_trigger": 3,
+          "options": [],
+          "is_chapter_end": true,
+          "next_campaign_start_suggestions": ["minas_corruptas_cap2_castle", "minas_corruptas_cap2_depths"] 
+      },
+    "id": "tpk_ending",
+         "title": "La Oscuridad Reclama lo Suyo",
+         "xp_reward": 0,
+         "description": "La fuerza os abandona. Las heridas son demasiado profundas, el enemigo demasiado brutal, la corrupción demasiado insidiosa... [%IF source=='ghoruk' THEN 'La última visión consciente es el martillo corrupto de Ghoruk descendiendo, la marca espiral ardiendo en sus ojos mientras la \"Voz\" ríe a través de su garganta rota.' ELSEIF source=='ghouls' THEN 'Las garras heladas y paralizantes os sujetan mientras la oscuridad hambrienta os devora entre siseos húmedos y el hedor a tumba.' ELSEIF source=='undead' THEN 'Sois abrumados por la marea implacable de huesos y carne pútrida, arrastrados a una no-muerte silenciosa.' ELSE 'Sea cual sea el golpe final, vuestra luz se extingue en la opresiva oscuridad de las minas.' %] Vuestras esperanzas mueren con vosotros. Grimhold no tiene salvación. Aethelgard cae un poco más en la desesperación, vuestra fallida aventura solo un susurro más ahogado por la Sombra Primigenia.<br><br><strong>FIN DE LA PARTIDA</strong>",
+         "enemies": [],
+         "options": [
+              { "text": "Volver a la Selección de Campaña", "next": {"sectionId": "REDIRECT_TO_SELECT_CAMPAIGN"} },
+              { "text": "Volver al Inicio (Página Principal)", "next": {"sectionId": "REDIRECT_TO_INDEX"} }
+          ],
+          "is_ending_node": true,
+          "is_failure_ending": true
+      },
+    "combat": {
+      "id": "combat",
+      "title": "¡Combate!",
+      "description": "La violencia estalla... (El sistema debe resolver el combate ahora. Al finalizar, se procederá a la sección destino indicada).",
+      "enemies": [],
+      "options": [],
+      "is_combat_node": true
+    },
+    "error": {
+       "id": "error",
+       "title": "Error / Fin de Ruta",
+       "description": "Algo ha ido mal o esta ruta aún no está desarrollada. Consulta al Amo del Juego o intenta reiniciar desde un punto guardado.",
+       "options": []
+     }
+  }
