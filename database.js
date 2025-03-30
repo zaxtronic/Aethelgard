@@ -493,13 +493,58 @@ async function updateGameState(characterId, campaignId, newSectionId, flagsToSet
     }
 }
 
+/**
+ * Obtiene el estado completo de un combate activo desde la DB.
+ * @param {number} combatId ID del combate a buscar.
+ * @returns {Promise<object|null>} Objeto con los datos del combate (incluyendo .combat_state_json parseado) o null.
+ */
+async function getCombatStateById(combatId) {
+    console.log(`[DB:getCombatStateById] Buscando estado combate ID: ${combatId}`);
+    if (!combatId) {
+        console.warn("[DB:getCombatStateById] ID de combate inválido.");
+        return null;
+    }
+    // Asegúrate que el nombre de la tabla 'active_combats' sea correcto
+    const sql = 'SELECT * FROM `active_combats` WHERE `combat_id` = ? LIMIT 1';
+    try {
+        const [rows] = await pool.execute(sql, [combatId]);
+        if (rows.length === 0) {
+            console.log(`[DB:getCombatStateById] Combate ${combatId} no encontrado.`);
+            return null; // No encontrado
+        }
 
+        const combatStateData = rows[0];
+        // Parsear el estado JSON guardado
+        console.log(`[DB:getCombatStateById] Combate ${combatId} encontrado. Parseando JSON...`);
+        combatStateData.combat_state_json = safeJsonParse(combatStateData.combat_state_json, null); // Usa tu función auxiliar
+
+        if (!combatStateData.combat_state_json) {
+            console.error(`[DB:getCombatStateById] JSON de estado para combate ${combatId} es inválido o nulo en la DB.`);
+            // Decide si devolver null o lanzar un error más grave
+            return null;
+        }
+
+        console.log(`[DB:getCombatStateById] Estado combate ${combatId} listo.`);
+        return combatStateData; // Devuelve la fila completa con el JSON ya parseado
+
+    } catch (error) {
+        console.error(`[DB:getCombatStateById] Error SQL obteniendo combate ${combatId}:`, error);
+        return null; // Devuelve null en caso de error de DB
+    }
+}
+function rollD20() {
+    return Math.floor(Math.random() * 20) + 1;
+}
+function getModifier(statScore) { return Math.floor(((statScore || 10) - 10) / 2); }
 // --- Exportar las funciones necesarias y el pool ---
 module.exports = {
     pool,               // Exportar por si se necesita acceso directo al pool
     testConnection,     // Para pruebas iniciales
     getCharacter,       // Obtiene datos PJ
     getGameState,       // Obtiene estado específico del juego
-    updateGameState     // Función transaccional principal para guardar progreso
+    updateGameState,    // Función transaccional principal para guardar progreso
+    createCombat,       // <-- ¡ASEGÚRATE DE QUE ESTÁ AQUÍ!
+    deleteCombat,       // <-- Y esta también, si la necesitas
+    getCombatStateById,  // <-- Y esta si la implementaste para /api/combat/action
     // Añade aquí otras funciones DB que puedas necesitar (ej: createCharacter, etc.)
 };
