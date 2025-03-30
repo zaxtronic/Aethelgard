@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aethelgard: Selección de Campaña</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Google Fonts -->
+    <title>Aethelgard: Selección de Aventura y Grupo</title>
+    <!-- CSS Bootstrap, Google Fonts, Estilos Personalizados -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Estilos Personalizados -->
     <style>
-        /* === Estilos CSS (Igual que index.html) === */
+        /* === Estilos CSS Completos === */
         :root {
             --color-background-dark: #1a1a1a;
             --color-background-section: #252525;
@@ -25,213 +23,361 @@
             --color-border-dark: #333;
             --color-border-light: #444;
         }
-        html { scroll-padding-top: 20px; /* No hay navbar fija aquí */ scroll-behavior: smooth; }
-        body { font-family: 'EB Garamond', serif; background-color: var(--color-background-dark); color: var(--color-text-primary); line-height: 1.7; padding-top: 20px; }
+        html { scroll-padding-top: 20px; scroll-behavior: smooth;}
+        body { font-family: 'EB Garamond', serif; background-color: var(--color-background-dark); color: var(--color-text-primary); line-height: 1.7; padding-top: 20px;}
         h1, h2, h3 { font-family: 'Cinzel Decorative', cursive; }
-        h1 { color: var(--color-accent-parchment); font-size: 2.5em;}
-        h2 { color: var(--color-accent-gold); font-size: 1.8em; margin-top: 2rem; border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.5rem; }
-        .container { max-width: 960px; } /* Limitar ancho */
-        a { color: var(--color-accent-bronze); text-decoration: none; }
-        a:hover { color: #ffcc88; }
-        .btn-custom-primary { background-color: var(--color-accent-dark-red); border-color: #8a4f4f; color: var(--color-text-primary); font-weight: bold; transition: background-color 0.3s ease, border-color 0.3s ease; margin: 5px; padding: 10px 20px; }
-        .btn-custom-primary:hover { background-color: #8a4f4f; border-color: #a56f6f; color: #fff; }
-        .btn-custom-primary:disabled { background-color: #4a2525; border-color: #6a3f3f; color: #777; }
-        footer { text-align: center; margin-top: 40px; padding: 20px 0; font-size: 0.9em; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-dark); }
+        h1 { color: var(--color-accent-parchment); font-size: 2.5em; text-shadow: 1px 1px 2px #000; }
+        h2 { color: var(--color-accent-gold); font-size: 1.8em; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.5rem; }
+        h3 { color: var(--color-accent-parchment); font-size: 1.5em; margin-top: 0; margin-bottom: 0.75rem; }
+        .container { max-width: 1140px; }
 
-        /* Estilos específicos para selección */
-        .campaign-card {
-             background-color: var(--color-background-section);
-             border: 2px solid var(--color-border-light); /* Borde un poco más grueso */
-             border-radius: 5px; padding: 25px; margin-bottom: 25px;
-             transition: border-color 0.3s ease, transform 0.2s ease;
-             cursor: pointer;
-        }
-        .campaign-card h3 { color: var(--color-accent-parchment); margin-top: 0; font-size: 1.6em; margin-bottom: 0.75rem;}
-         /* Estilo para campañas deshabilitadas */
-         .campaign-card.disabled {
-             cursor: not-allowed;
-             opacity: 0.5;
-             border-style: dashed; /* Indica visualmente que no está lista */
-             background-color: #1f1f1f; /* Fondo ligeramente diferente */
-         }
-         .campaign-card:not(.disabled):hover { /* Efecto hover sólo en habilitadas */
-             border-color: var(--color-accent-gold);
-             transform: translateY(-3px); /* Ligero efecto elevación */
-         }
-         .campaign-card.selected { /* Estilo selección */
-            border-color: var(--color-accent-bronze); /* Naranja/Bronce para selección */
-            transform: translateY(-1px);
-             box-shadow: 0 0 15px rgba(224, 157, 84, 0.2); /* Sutil brillo bronce */
-         }
+        /* Campañas */
+        .campaign-card { background-color: var(--color-background-section); border: 2px solid var(--color-border-light); border-radius: 5px; padding: 25px; margin-bottom: 25px; transition: border-color 0.3s ease, transform 0.2s ease; cursor: pointer; }
+        .campaign-card.disabled { cursor: not-allowed; opacity: 0.5; border-style: dashed; background-color: #1f1f1f;}
+        .campaign-card:not(.disabled):hover { border-color: var(--color-accent-gold); transform: translateY(-3px); }
+        .campaign-card.selected { border-color: var(--color-accent-bronze); transform: translateY(-1px); box-shadow: 0 0 15px rgba(224, 157, 84, 0.2); }
 
-        /* Estilos número jugadores */
-        .selection-container {
-             margin-top: 40px; padding-top: 25px;
-             border-top: 1px solid var(--color-border-dark);
-             display: flex; align-items: center; justify-content: space-between;
-             flex-wrap: wrap; /* Para móviles */
-        }
-        .player-count-group { margin-bottom: 15px; /* Espacio en móvil */ }
-        label[for="player-count"] {
-            font-weight: bold; color: var(--color-text-primary);
-            margin-right: 10px; font-size: 1.1em;
-        }
-        .form-select {
-             background-color: var(--color-background-section); border-color: var(--color-border-light);
-             color: var(--color-text-primary); width: auto; display: inline-block;
-             cursor: pointer;
-         }
-         .form-select:focus {
-             background-color: #333; border-color: var(--color-accent-gold);
-             color: var(--color-text-primary);
-             box-shadow: 0 0 0 0.25rem rgba(184, 169, 117, 0.25);
-         }
+         /* Selección Personajes */
+        #character-selection { margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--color-border-dark); }
+        .player-character-slot { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--color-border-light); }
+        .player-character-slot:last-child { border-bottom: none; margin-bottom: 1rem;}
+        /* Corregido: La etiqueta para cada jugador */
+        .player-character-slot > label { font-size: 1.2em; font-weight: bold; color: var(--color-accent-gold); margin-bottom: 1rem; display: block; }
+        .char-select-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .char-select-card { display: flex; align-items: center; width: calc(50% - 10px); background-color: var(--color-background-section); border: 1px solid var(--color-border-light); border-radius: 4px; padding: 8px 12px; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease; font-size: 0.95em; }
+        @media (min-width: 992px) { .char-select-card { width: calc(33.333% - 10px); } }
+        .char-select-card:not(.unavailable):hover { border-color: var(--color-accent-gold); }
+        .char-select-card.selected-by-player { border-color: var(--color-accent-bronze); font-weight: bold; background-color: #353535; }
+        .char-select-card.unavailable { opacity: 0.4; cursor: not-allowed; background-color: #1f1f1f; border-color: var(--color-border-dark); }
+        .char-icon { font-size: 1.3em; margin-right: 10px; width: 25px; text-align: center; color: var(--color-accent-gold); }
+        .char-details .name { color: var(--color-accent-parchment); font-size: 1em; margin: 0;}
+        .char-details .race-class { font-size: 0.8em; color: var(--color-text-secondary); margin:0;}
+        .selected-char-display { font-weight: bold; font-style: italic; color: var(--color-accent-parchment); margin-top: 0.75rem; padding-left: 0; font-size: 1.05em; min-height: 1.5em; }
+
+        /* Número Jugadores */
+        .player-count-container { margin-top: 2rem; }
+        .player-count-group label { font-weight: bold; color: var(--color-text-primary); margin-right: 10px; font-size: 1.1em; } /* Corregido selector */
+        .form-select { background-color: var(--color-background-section); border-color: var(--color-border-light); color: var(--color-text-primary); width: auto; display: inline-block; cursor: pointer; }
+        .form-select:focus { background-color: #333; border-color: var(--color-accent-gold); color: var(--color-text-primary); box-shadow: 0 0 0 0.25rem rgba(184, 169, 117, 0.25); }
+
+         /* Botón Empezar y Error */
+         .selection-container { margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--color-border-dark); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;}
+         footer { text-align: center; margin-top: 40px; padding: 20px 0; font-size: 0.9em; color: var(--color-text-secondary); border-top: 1px solid var(--color-border-dark); }
+         a { color: var(--color-accent-bronze); text-decoration: none; } a:hover { color: #ffcc88; }
+         .btn-custom-primary { background-color: var(--color-accent-dark-red); border-color: #8a4f4f; color: var(--color-text-primary); font-weight: bold; transition: background-color 0.3s ease, border-color 0.3s ease; margin: 5px; padding: 10px 20px; }
+         .btn-custom-primary:hover { background-color: #8a4f4f; border-color: #a56f6f; color: #fff; }
+         .btn-custom-primary:disabled { background-color: #4a2525; border-color: #6a3f3f; color: #777; cursor: not-allowed;}
 
     </style>
 </head>
 <body data-bs-theme="dark">
 
-    <div class="container mt-4">
-        <div class="text-center mb-5">
+    <div class="container mt-4 mb-5">
+        <div class="text-center mb-4">
             <h1>Elige tu Destino en Aethelgard</h1>
-            <p class="text-secondary">Selecciona la crónica que deseas vivir y el número de almas valientes (o condenadas) que te acompañarán.</p>
-            <hr style="border-color: var(--color-border-dark);">
         </div>
+        <hr style="border-color: var(--color-border-dark); margin-bottom: 2.5rem;">
 
+        <!-- 1. Selección Campaña -->
         <div id="campaign-list">
-            <h2>Campañas Disponibles:</h2>
-
-            <!-- Campaña 1: Minas Corruptas -->
-            <div class="campaign-card" data-campaign-id="minas_corruptas" data-start-section="1">
-                <h3>Capítulo 1: Las Minas Corruptas</h3>
-                <p>Responde a la llamada de Grimhold. Investiga el origen de la corrupción que asola el pueblo, adentrándote en las peligrosas y olvidadas minas bajo el castillo. Enfréntate a Goblins, no-muertos y al orco trastornado Ghoruk.</p>
-                <small class="text-secondary">Niveles Recomendados: 1-3 | Duración: 3-5 Sesiones | Estado: <strong>Disponible</strong></small>
+            <h2>1. Selecciona la Campaña</h2>
+             <div class="campaign-card" data-campaign-id="minas_corruptas" data-start-section="1">
+                 <h3>Capítulo 1: Las Minas Corruptas</h3>
+                 <p>Responde a la llamada de Grimhold. Investiga el origen de la corrupción que asola el pueblo, adentrándote en las peligrosas y olvidadas minas bajo el castillo. Enfréntate a Goblins, no-muertos y al orco trastornado Ghoruk.</p>
+                 <small class="text-secondary">Niveles Recomendados: 1-3 | Duración: 3-5 Sesiones | Estado: <strong>Disponible</strong></small>
             </div>
-
-            <!-- Campaña 2 (Placeholder) -->
-            <div class="campaign-card disabled" data-campaign-id="el_castillo_sombrio">
-                <h3>Capítulo 2: El Castillo Sombrío</h3>
-                 <p>Asciende desde las profundidades o infíltrate en la fortaleza maldita de Grimhold. Descubre los secretos tras la Sombra Primigenia, enfréntate a cultistas y horrores aberrantes en los salones profanados.</p>
-                 <small class="text-secondary">Niveles Recomendados: 3-6 | Duración Estimada: 5-7 Sesiones | Estado: <strong>Próximamente</strong></small>
+             <div class="campaign-card disabled" data-campaign-id="el_castillo_sombrio">
+                 <h3>Capítulo 2: El Castillo Sombrío</h3>
+                  <p>Asciende desde las profundidades o infíltrate en la fortaleza maldita de Grimhold...</p>
+                  <small class="text-secondary">Niveles Recomendados: 3-6 | Estado: <strong>Próximamente</strong></small>
             </div>
-
-            <!-- Campaña 3 (Placeholder) -->
-            <div class="campaign-card disabled" data-campaign-id="ecos_del_pasado">
+             <div class="campaign-card disabled" data-campaign-id="ecos_del_pasado">
                  <h3>Capítulo 3: Ecos del Pasado Ancestral</h3>
-                 <p>Viaja más allá de Grimhold, explorando antiguas ruinas élficas o criptas enanas mencionadas en oscuros legajos encontrados en el castillo, buscando la clave para sellar o destruir la Sombra definitivamente.</p>
-                 <small class="text-secondary">Niveles Recomendados: 6-10 | Duración Estimada: 6-8 Sesiones | Estado: <strong>Próximamente</strong></small>
+                  <p>Viaja más allá de Grimhold, explorando antiguas ruinas...</p>
+                  <small class="text-secondary">Niveles Recomendados: 6-10 | Estado: <strong>Próximamente</strong></small>
              </div>
-
         </div>
 
-        <!-- Selección Jugadores y Botón Empezar -->
-        <div class="selection-container">
-            <div class="player-count-group">
-                <label for="player-count">Número de Jugadores:</label>
-                <select class="form-select" id="player-count" name="players">
-                    <option value="2" selected>2 Jugadores</option>
+        <!-- 2. Definir Grupo -->
+        <div class="player-count-container mt-5">
+             <h2>2. Define tu Grupo</h2>
+             <div class="player-count-group">
+                <!-- Corregido ID y Name de Label -->
+                <label for="player-count">Número de Jugadores (2-4):</label>
+                <select class="form-select" id="player-count" name="player-count-selector"> <!-- Cambiado name por si acaso -->
+                    <option value="2">2 Jugadores</option>
                     <option value="3">3 Jugadores</option>
-                    <option value="4">4 Jugadores</option>
+                    <option value="4" selected>4 Jugadores</option>
                 </select>
              </div>
-            <button id="start-selected-campaign-btn" class="btn btn-lg btn-custom-primary" disabled>Empezar Aventura Seleccionada</button>
         </div>
-        <div id="selection-error" class="text-danger mt-3" style="display: none; font-weight: bold;">Por favor, selecciona una campaña disponible.</div>
+
+        <!-- 3. Selección Personajes -->
+        <div id="character-selection" style="display: none;">
+             <h2 class="mt-5">3. Recluta a tus Aventureros</h2>
+             <!-- JS Generará los <div class="player-character-slot">...</div> aquí -->
+         </div>
+
+        <!-- 4. Empezar -->
+        <div class="selection-container">
+            <div> <div id="selection-error" class="text-danger mt-2" style="display: none; font-weight: bold;"></div> </div>
+            <button id="start-selected-campaign-btn" class="btn btn-lg btn-custom-primary" disabled>Comenzar Aventura</button>
+        </div>
 
     </div><!-- /container -->
 
     <footer class="mt-5">
-        <div class="container">
-             <p>&copy; 2024 "Aethelgard: Crónicas de la Sombra Primigenia" - [Tu Nombre/Grupo]. Inspirado en SRD 5.1 OGL.</p>
-             <p><a href="index.html">Volver a Inicio</a></p> <!-- Enlace para volver -->
-         </div>
-    </footer>
+         <div class="container">
+              <p>© 2024 "Aethelgard: Crónicas de la Sombra Primigenia" - [Tu Nombre/Grupo]. Inspirado en SRD 5.1 OGL.</p>
+              <p><a href="index.html">Volver a Inicio</a></p>
+          </div>
+     </footer>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <!-- JS para Selección (Corregido y Verificado) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // === ESTADO GLOBAL SELECCIÓN ===
         const campaignCards = document.querySelectorAll('.campaign-card:not(.disabled)');
         const startButton = document.getElementById('start-selected-campaign-btn');
         const playerCountSelect = document.getElementById('player-count');
         const selectionError = document.getElementById('selection-error');
+        const characterSelectionDiv = document.getElementById('character-selection');
+
         let selectedCampaignId = null;
         let selectedStartSection = null;
+        let playerCount = parseInt(playerCountSelect.value, 10);
+         // Objeto: key=playerIndex, value= Objeto COMPLETO del PJ seleccionado de availableCharacters
+         let playerCharacterSelections = {}; // Ejemplo: { 0: {pregen_id:"borin", numeric_id:1,...}, 1: null, ... }
 
-        // Asegura botón deshabilitado y error oculto al inicio
-        startButton.disabled = true;
-        selectionError.style.display = 'none';
+        // --- DATOS BASE PERSONAJES PREGENERADOS (ID string es pregen_id ahora)---
+        const availableCharacters = [
+            { pregen_id: "borin", numeric_id: 1, name: "Borin Manopetra", race: "Enano Montaña", class: "Guerrero", icon: "🛡️", stats_base: { FUE: 17, DES: 13, CON: 14, INT: 10, SAB: 10, CAR: 8, PV_base_class: 22 } },
+            { pregen_id: "elara", numeric_id: 2, name: "Elara Umbrío", race: "Elfa Oscura", class: "Pícaro", icon: "🗡️", stats_base: { FUE: 8, DES: 17, CON: 8, INT: 14, SAB: 10, CAR: 12, PV_base_class: 18 } },
+            { pregen_id: "finnian", numeric_id: 3, name: "Finnian Piesligeros", race: "Humano Fronterizo", class: "Explorador", icon: "🏹", stats_base: { FUE: 10, DES: 15, CON: 14, INT: 8, SAB: 14, CAR: 10, PV_base_class: 18 } },
+            { pregen_id: "seraphina", numeric_id: 4, name: "Seraphina MelodíaTriste", race: "Alta Elfa", class: "Bardo", icon: "🎵", stats_base: { FUE: 8, DES: 14, CON: 10, INT: 14, SAB: 10, CAR: 17, PV_base_class: 18 } },
+            { pregen_id: "marius", numeric_id: 5, name: "Marius Scintilla", race: "Humano Erudito", class: "Hechicero", icon: "🔥", stats_base: { FUE: 9, DES: 12, CON: 14, INT: 16, SAB: 10, CAR: 14, PV_base_class: 15 } },
+            { pregen_id: "kaelen", numeric_id: 6, name: "Hermana Kaelen", race: "Humana Urbana", class: "Clérigo", icon: "☀️", stats_base: { FUE: 10, DES: 10, CON: 14, INT: 12, SAB: 16, CAR: 14, PV_base_class: 15 } },
+            { pregen_id: "grosh", numeric_id: 7, name: "Grosh Espíritu Roto", race: "Orco Negro", class: "Chamán", icon: "💀", stats_base: { FUE: 14, DES: 8, CON: 17, INT: 8, SAB: 16, CAR: 8, PV_base_class: 22 } },
+            { pregen_id: "brynja", numeric_id: 8, name: "Brynja Acechante", race: "Elfa Silvana", class: "Cazador", icon: "🐾", stats_base: { FUE: 12, DES: 16, CON: 13, INT: 10, SAB: 15, CAR: 8, PV_base_class: 20 } },
+            { pregen_id: "durgar", numeric_id: 9, name: "Durgar Puñoferreo", race: "Enano Colinas", class: "Guerrero (Def)", icon: "🧱", stats_base: { FUE: 15, DES: 10, CON: 16, INT: 8, SAB: 13, CAR: 9, PV_base_class: 22 } },
+            { pregen_id: "silas", numeric_id: 10, name: "Silas 'Sombra' Nocturno", race: "Humano Urbano", class: "Pícaro (Engaño)", icon: "🎭", stats_base: { FUE: 8, DES: 15, CON: 10, INT: 13, SAB: 9, CAR: 16, PV_base_class: 18 } },
+            { pregen_id: "vorlag", numeric_id: 11, name: "Vorlag ColmilloNegro", race: "Orco Montaña", class: "Cazador (Bestias)", icon: "🦴", stats_base: { FUE: 17, DES: 14, CON: 14, INT: 8, SAB: 13, CAR: 7, PV_base_class: 20 } },
+            { pregen_id: "faelar", numeric_id: 12, name: "Faelar Velo Lunar", race: "Alto Elfo", class: "Hechicero (Control)", icon: "✨", stats_base: { FUE: 8, DES: 13, CON: 9, INT: 17, SAB: 10, CAR: 14, PV_base_class: 15 } }
+        ];
+         function getModifier(statScore) { return Math.floor(((statScore || 10) - 10) / 2); }
 
-        campaignCards.forEach(card => {
+        // --- INICIALIZACIÓN Y FUNCIONES (checkStartButtonStatus, etc. - ¡MODIFICADAS!) ---
+        startButton.disabled = true; selectionError.style.display = 'none';
+
+        function checkStartButtonStatus() {
+             const requiredChars = playerCount;
+             let selectedCount = Object.values(playerCharacterSelections).filter(char => char !== null).length; // Contar objetos no nulos
+
+            const campaignSelected = !!selectedCampaignId;
+            const charactersSelectedCorrectly = (selectedCount === requiredChars);
+
+              startButton.disabled = !(campaignSelected && charactersSelectedCorrectly);
+
+               // Gestionar mensajes de error
+               if (!campaignSelected) {
+                   selectionError.textContent = "1. Selecciona una campaña."; selectionError.style.display = 'block';
+               } else if (!charactersSelectedCorrectly) {
+                   selectionError.textContent = `3. Faltan ${requiredChars - selectedCount} jugadores por elegir personaje.`; selectionError.style.display = 'block';
+               } else {
+                   selectionError.style.display = 'none'; // Ocultar si todo OK
+               }
+           }
+
+           function getAlreadySelectedNumericIds(currentPlayerIndex) {
+              let selected = [];
+              for (let index in playerCharacterSelections) {
+                  if (playerCharacterSelections.hasOwnProperty(index) && parseInt(index, 10) !== currentPlayerIndex && playerCharacterSelections[index]) {
+                      selected.push(playerCharacterSelections[index].numeric_id); // <-- Guarda el ID NUMÉRICO
+                  }
+              }
+              return selected;
+          }
+
+        // --- RENDERIZAR SLOTS SELECCIÓN PERSONAJES ---
+        function renderCharacterSlots() {
+             characterSelectionDiv.innerHTML = `<h2 class="mt-5">3. Recluta a tus Aventureros</h2>`; // Título sección
+             playerCharacterSelections = {}; // Reiniciar selección al (re)renderizar slots
+
+             for (let i = 0; i < playerCount; i++) {
+                  const slotDiv = document.createElement('div');
+                  slotDiv.classList.add('player-character-slot');
+                  slotDiv.dataset.playerIndex = i; // Guardar el índice (0, 1, 2, ...)
+                  // Corregido: El 'for' en el label debe coincidir con un ID si lo hubiera, o quitarlo
+                  slotDiv.innerHTML = `<label>Jugador ${i + 1} elige:</label>`;
+                  const charList = document.createElement('div');
+                  charList.classList.add('char-select-list');
+                  slotDiv.appendChild(charList);
+                  const selectedDisplay = document.createElement('div');
+                  selectedDisplay.classList.add('selected-char-display');
+                  selectedDisplay.textContent = "Ninguno seleccionado"; // Mensaje inicial
+                  slotDiv.appendChild(selectedDisplay);
+                  characterSelectionDiv.appendChild(slotDiv); // Añadir el slot completo al DOM
+              }
+              fillCharacterOptions(); // Llenar con las opciones de personajes
+         }
+
+
+         function fillCharacterOptions() {
+             const slots = document.querySelectorAll('.player-character-slot');
+             slots.forEach((slot) => {
+                 const listDiv = slot.querySelector('.char-select-list');
+                 const selectedDisplay = slot.querySelector('.selected-char-display');
+                 const playerIndex = parseInt(slot.dataset.playerIndex, 10);
+                 listDiv.innerHTML = '';
+                  const currentlySelectedCharObject = playerCharacterSelections[playerIndex]; // Puede ser null o el objeto PJ
+                  const selectedByOthersNumericIds = getAlreadySelectedNumericIds(playerIndex); // Array de IDs NUMÉRICOS
+
+                  availableCharacters.forEach(charData => { // Itera sobre TODOS los PJ base
+                       const cardDiv = document.createElement('div');
+                       cardDiv.classList.add('char-select-card');
+                       cardDiv.dataset.charId = charData.pregen_id; // Sigue usando pregen_id para el DOM
+
+                      // ¿Está seleccionado por ESTE jugador? Compara el objeto entero o su ID
+                      if (currentlySelectedCharObject && currentlySelectedCharObject.pregen_id === charData.pregen_id) cardDiv.classList.add('selected-by-player');
+                      // ¿Está seleccionado por OTRO jugador? Compara el ID NUMÉRICO
+                       if (selectedByOthersNumericIds.includes(charData.numeric_id)) cardDiv.classList.add('unavailable');
+
+                       cardDiv.innerHTML = `
+                        <span class="char-icon">${charData.icon || '👤'}</span>
+                        <div class="char-details">
+                            <div class="name">${charData.name}</div>
+                            <div class="race-class">${charData.race} - ${charData.class}</div>
+                        </div>`;
+
+                        if(!cardDiv.classList.contains('unavailable')) {
+                             cardDiv.addEventListener('click', handleCharacterSelection);
+                        }
+                       listDiv.appendChild(cardDiv);
+                   });
+
+                  if (currentlySelectedCharObject) {
+                        selectedDisplay.textContent = `Seleccionado: ${currentlySelectedCharObject.name}`;
+                  } else { selectedDisplay.textContent = "Ninguno seleccionado"; }
+            });
+             checkStartButtonStatus();
+        }
+
+        function handleCharacterSelection(event) {
+             const card = event.currentTarget;
+             const pregenId = card.dataset.charId; // ID string ("borin")
+             const slotDiv = card.closest('.player-character-slot');
+             const playerIndex = parseInt(slotDiv.dataset.playerIndex, 10);
+             const isCurrentlySelectedByThisPlayer = card.classList.contains('selected-by-player');
+
+             // Busca el objeto completo del PJ que se clickeó
+             const characterDataObject = availableCharacters.find(c => c.pregen_id === pregenId);
+             if (!characterDataObject) return; // No debería pasar
+
+            if (isCurrentlySelectedByThisPlayer) {
+                 playerCharacterSelections[playerIndex] = null; // Deseleccionar
+            } else {
+                  // Seleccionar el OBJETO completo para este jugador
+                  playerCharacterSelections[playerIndex] = characterDataObject;
+             }
+
+            console.log("Selecciones actuales (objetos):", playerCharacterSelections);
+             fillCharacterOptions(); // Re-renderizar TODO
+        }
+
+
+        // --- LISTENERS INICIALES ---
+         // Campaña: Muestra sección personajes y la renderiza
+         campaignCards.forEach(card => {
             card.addEventListener('click', () => {
-                // Quitar selección previa VISUAL
-                campaignCards.forEach(c => c.classList.remove('selected'));
-                // Añadir selección actual VISUAL
-                card.classList.add('selected');
-
-                // GUARDAR datos de la tarjeta clickeada
-                selectedCampaignId = card.dataset.campaignId;
-                selectedStartSection = card.dataset.startSection;
-
-                console.log(`Tarjeta clickeada: Campaña ID=${selectedCampaignId}, Inicio Sección=${selectedStartSection}`);
-
-                // Habilitar botón SOLO si tenemos datos válidos
-                if (selectedCampaignId && selectedStartSection) {
-                    startButton.disabled = false;
-                    selectionError.style.display = 'none'; // Ocultar error
-                } else {
-                    startButton.disabled = true; // Asegurar deshabilitado si algo falló
-                    console.error("Error: La tarjeta clickeada no tiene campaignId o startSection válido en sus data-attributes.");
-                    selectionError.textContent = "Error al leer datos de campaña. Intenta refrescar.";
-                    selectionError.style.display = 'block';
-                }
+                 if(card.classList.contains('selected')) return;
+                 campaignCards.forEach(c => c.classList.remove('selected'));
+                 card.classList.add('selected');
+                 selectedCampaignId = card.dataset.campaignId;
+                 selectedStartSection = card.dataset.startSection;
+                 characterSelectionDiv.style.display = 'block';
+                 renderCharacterSlots(); // <-- Renderiza slots por primera vez al elegir campaña
             });
         });
 
-        // Listener del botón "Empezar"
-        startButton.addEventListener('click', () => {
-             console.log("Botón Empezar pulsado. Campaña seleccionada actualmente:", selectedCampaignId);
+         // Número Jugadores: Actualiza playerCount y Re-renderiza sección personajes
+         playerCountSelect.addEventListener('change', () => {
+              playerCount = parseInt(playerCountSelect.value, 10);
+               if (characterSelectionDiv.style.display === 'block') { // Solo renderizar si sección es visible
+                    renderCharacterSlots();
+               } else { checkStartButtonStatus(); } // Si no, solo validar botón
+         });
 
-            // Comprobar si hay una campaña seleccionada válida
-            if (selectedCampaignId && selectedStartSection) {
-                const playerCount = playerCountSelect.value;
+         // Botón Empezar: Valida, guarda y redirige
+         startButton.addEventListener('click', () => {
+             checkStartButtonStatus(); // Última validación
+             if (startButton.disabled) { console.error("Botón Empezar pulsado pero deshabilitado."); return; }
 
-                try {
-                    // Guardar la información en localStorage para que game_play.html la lea
-                    localStorage.setItem('aethelgard_selected_campaign', selectedCampaignId);
-                    localStorage.setItem('aethelgard_player_count', playerCount);
-                    localStorage.setItem('aethelgard_current_section', selectedStartSection); // Guarda la SECCIÓN INICIAL
-                     // Opcional: Limpiar estado de PJ anterior si existe
-                     // localStorage.removeItem('aethelgard_character_state');
+            // Obtener el ARRAY de IDs pregenerados seleccionados, ORDENADO por índice de jugador
+             // Object.entries da [ [ '0', 'borin' ], [ '1', 'elara' ], ... ]
+             // Aseguramos el orden correcto de los personajes elegidos
+             const finalSelectedPregenIds = Object.values(playerCharacterSelections)
+    .map(charObj => charObj?.pregen_id) // Usa optional chaining por si charObj es null
+    .filter(id => id !== null);
+console.log("IDs de pregen seleccionados:", finalSelectedPregenIds);
 
-                    console.log(`Datos guardados: Campaña=${selectedCampaignId}, Jugadores=${playerCount}, Sección Inicio=${selectedStartSection}.`);
+                if(finalSelectedPregenIds.length !== playerCount) { // <--- Usa 'finalSelectedPregenIds'
+                  console.error(`Error: Conteo de personajes (${finalSelectedPregenIds.length}) no coincide con jugadores (${playerCount}).`);
+                  checkStartButtonStatus(); // Actualiza mensaje de error si es necesario
+                  return;
+             }
 
-                    // Verificar que se guardó (medida extra)
-                     if (localStorage.getItem('aethelgard_selected_campaign') !== selectedCampaignId) {
-                         throw new Error("LocalStorage no guardó correctamente la campaña.");
-                     }
+             // *** NUEVO: Crear Array con DATOS INICIALES COMPLETOS de cada PJ seleccionado ***
+             let initialPartyStats = [];
+ for(const pregenId of finalSelectedPregenIds) {
+     console.log(`Buscando datos base para pregenId: "${pregenId}"`); // <-- AÑADE ESTE LOG
+     const charBaseData = availableCharacters.find(c => c.pregen_id === pregenId);
+     console.log("Encontrado charBaseData:", charBaseData); // <-- AÑADE ESTE LOG
 
-                    // Redirigir a la página principal del juego
-                     const nextPageUrl = `game_play.html?campaign=${selectedCampaignId}&players=${playerCount}`;
-                     console.log(`Redirigiendo a: ${nextPageUrl}`);
-                     window.location.href = nextPageUrl;
+                   if (charBaseData) {
+                        const modCon = getModifier(charBaseData.stats_base.CON || 10);
+                         const maxPV = (charBaseData.stats_base.PV_base_class || 15) + (modCon * 1);
+                         initialPartyStats.push({
+                            character_id: charBaseData.numeric_id, // ID numérico real
+                            pregen_id: charBaseData.pregen_id,
+                            Name: charBaseData.name, Race: charBaseData.race, Class: charBaseData.class,
+                             Level: 1, XP: 0,
+                             // Stats Base
+                            FUE: charBaseData.stats_base.FUE || 10, DES: charBaseData.stats_base.DES || 10,
+                            CON: charBaseData.stats_base.CON || 10, INT: charBaseData.stats_base.INT || 10,
+                            SAB: charBaseData.stats_base.SAB || 10, CAR: charBaseData.stats_base.CAR || 10,
+                             PV_max_calc: maxPV, PV_actual_calc: maxPV,
+                             // Equipar defaults aquí si se definen en availableCharacters?
+                            Inventory: [], Abilities: [], spells_known_json:{}, spells_prepared_json:[]
+                        });
+                    } else {
+                       console.error(`Datos base no encontrados para ${pregenId}`);
+                       // ¿Qué hacer? Omitir, añadir genérico, mostrar error?
+                        alert(`Error: No se encontraron datos para el personaje ${pregenId}. No se puede iniciar.`);
+                        return; // Detener inicio
+                    }
+               }
+               console.log("Grupo Inicial a Guardar:", initialPartyStats);
 
-                } catch (error) {
-                     console.error("Error al intentar guardar en localStorage o redirigir:", error);
-                     alert("Hubo un problema al iniciar la aventura. Por favor, asegúrate de que localStorage está habilitado en tu navegador e inténtalo de nuevo.");
-                     selectionError.textContent = `Error: ${error.message || "No se pudo iniciar."}`;
-                     selectionError.style.display = 'block';
-                 }
+             // --- GUARDAR Y REDIRIGIR ---
+             try {
+                 localStorage.setItem('aethelgard_selected_campaign', selectedCampaignId);
+                 localStorage.setItem('aethelgard_player_count', playerCount);
+                 localStorage.setItem('aethelgard_current_section', selectedStartSection);
+                 // Guarda el array de personajes PREGENERADOS seleccionados (referencia)
+                 localStorage.setItem('aethelgard_selected_chars', JSON.stringify(finalSelectedPregenIds));
+                 // *** Guarda el ARRAY con los datos iniciales COMPLETOS del grupo ***
+                  localStorage.setItem('aethelgard_initial_party_state', JSON.stringify(initialPartyStats));
+                   // Limpiar el estado de 'mi' personaje específico de una partida anterior
+                   localStorage.removeItem('aethelgard_active_character_index');
 
-            } else {
-                // Si se pulsa sin seleccionar (aunque el botón debería estar desactivado)
-                console.error("Intento de empezar sin campaña seleccionada.");
-                selectionError.textContent = "Por favor, selecciona una campaña disponible de la lista.";
-                selectionError.style.display = 'block';
-                startButton.disabled = true;
-            }
-        });
+                  console.log("Datos de grupo guardados en localStorage, redirigiendo...");
+                  const nextPageUrl = `game_play.html?campaign=${selectedCampaignId}&players=${playerCount}`; // Players sigue siendo útil para backend
+                  window.location.href = nextPageUrl;
+
+             } catch (error) { alert(`Error guardando selección: ${error.message}.`); console.error(error);}
+        }); // --- Fin Listener Botón Empezar ---
+
+         // Estado Inicial
+          checkStartButtonStatus(); // Validar botón al cargar (estará deshabilitado)
 
     </script>
 </body>
